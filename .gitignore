@@ -1,0 +1,16 @@
+/*.csproj
+/*.sln
+/*.suo
+/*.unityproj
+/*.user
+/*.userprefs
+/.vs
+/.idea
+/Library
+/Temp
+/TestBuild
+/UserSettings
+/obj
+/Logs
+!*.dll
+!*.exe

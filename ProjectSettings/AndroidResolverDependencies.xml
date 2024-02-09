@@ -1,0 +1,37 @@
+<dependencies>
+  <packages>
+    <package>androidx.activity:activity-ktx:1.5.1</package>
+    <package>androidx.appcompat:appcompat:1.4.2</package>
+    <package>androidx.core:core-ktx:1.8.0</package>
+    <package>androidx.lifecycle:lifecycle-process:2.4.1</package>
+    <package>androidx.lifecycle:lifecycle-viewmodel:2.5.1</package>
+    <package>androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1</package>
+    <package>com.google.android.gms:play-services-appset:16.0.2</package>
+    <package>com.google.android.instantapps:instantapps:1.1.0</package>
+    <package>com.google.android.material:material:1.6.1</package>
+    <package>com.my.target:mytarget-sdk:5.15.3</package>
+    <package>com.yandex.ads.mediation:mobileads-mytarget:5.19.0.1</package>
+    <package>com.yandex.android:mobileads:6.3.0</package>
+    <package>org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10</package>
+    <package>org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4</package>
+    <package>org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4</package>
+    <package>ru.rustore.sdk:billingclient:2.2.0</package>
+    <package>ru.rustore.sdk:review:0.1.4</package>
+  </packages>
+  <files />
+  <settings>
+    <setting name="androidAbis" value="arm64-v8a,armeabi-v7a" />
+    <setting name="bundleId" value="pro.nado.numbers" />
+    <setting name="explodeAars" value="True" />
+    <setting name="gradleBuildEnabled" value="True" />
+    <setting name="gradlePropertiesTemplateEnabled" value="True" />
+    <setting name="gradleTemplateEnabled" value="True" />
+    <setting name="installAndroidPackages" value="True" />
+    <setting name="localMavenRepoDir" value="Assets/GeneratedLocalRepo" />
+    <setting name="packageDir" value="Assets/Plugins/Android" />
+    <setting name="patchAndroidManifest" value="True" />
+    <setting name="patchMainTemplateGradle" value="True" />
+    <setting name="projectExportEnabled" value="False" />
+    <setting name="useJetifier" value="False" />
+  </settings>
+</dependencies>
