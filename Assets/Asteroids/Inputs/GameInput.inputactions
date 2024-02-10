@@ -6,15 +6,6 @@
             "id": "90f70cf7-e5ed-45de-82c4-c05522ecf141",
             "actions": [
                 {
-                    "name": "Debug",
-                    "type": "Button",
-                    "id": "50c79fbb-e033-426d-bc6f-2013f2f2f45d",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Rotate",
                     "type": "Value",
                     "id": "0090b244-d832-4861-b8f1-167f49489fae",
@@ -22,20 +13,18 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Accelerate",
+                    "type": "Button",
+                    "id": "85064b80-856d-49fd-97fb-59bf04c46139",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "32ee41a0-6216-4552-a532-b229f889826a",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Debug",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "1D Axis",
                     "id": "fc8b626b-b023-4bca-91f0-801911843294",
@@ -48,7 +37,7 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "Negative",
+                    "name": "positive",
                     "id": "5c619a05-19f8-46d4-bd6b-ead117cf3e59",
                     "path": "<Keyboard>/leftArrow",
                     "interactions": "",
@@ -59,7 +48,7 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Positive",
+                    "name": "negative",
                     "id": "ada0709f-bb1e-40dd-8e41-986250717a63",
                     "path": "<Keyboard>/rightArrow",
                     "interactions": "",
@@ -68,6 +57,17 @@
                     "action": "Rotate",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "dba205dc-a584-401e-80a7-a5d8cfbcb7b7",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Accelerate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },

@@ -30,15 +30,6 @@ namespace Asteroids.Inputs
             ""id"": ""90f70cf7-e5ed-45de-82c4-c05522ecf141"",
             ""actions"": [
                 {
-                    ""name"": ""Debug"",
-                    ""type"": ""Button"",
-                    ""id"": ""50c79fbb-e033-426d-bc6f-2013f2f2f45d"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Rotate"",
                     ""type"": ""Value"",
                     ""id"": ""0090b244-d832-4861-b8f1-167f49489fae"",
@@ -46,20 +37,18 @@ namespace Asteroids.Inputs
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Accelerate"",
+                    ""type"": ""Button"",
+                    ""id"": ""85064b80-856d-49fd-97fb-59bf04c46139"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""32ee41a0-6216-4552-a532-b229f889826a"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Debug"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
                 {
                     ""name"": ""1D Axis"",
                     ""id"": ""fc8b626b-b023-4bca-91f0-801911843294"",
@@ -72,7 +61,7 @@ namespace Asteroids.Inputs
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""Negative"",
+                    ""name"": ""positive"",
                     ""id"": ""5c619a05-19f8-46d4-bd6b-ead117cf3e59"",
                     ""path"": ""<Keyboard>/leftArrow"",
                     ""interactions"": """",
@@ -83,7 +72,7 @@ namespace Asteroids.Inputs
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""Positive"",
+                    ""name"": ""negative"",
                     ""id"": ""ada0709f-bb1e-40dd-8e41-986250717a63"",
                     ""path"": ""<Keyboard>/rightArrow"",
                     ""interactions"": """",
@@ -92,6 +81,17 @@ namespace Asteroids.Inputs
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dba205dc-a584-401e-80a7-a5d8cfbcb7b7"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Accelerate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -128,8 +128,8 @@ namespace Asteroids.Inputs
 }");
             // Gameplay
             m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
-            m_Gameplay_Debug = m_Gameplay.FindAction("Debug", throwIfNotFound: true);
             m_Gameplay_Rotate = m_Gameplay.FindAction("Rotate", throwIfNotFound: true);
+            m_Gameplay_Accelerate = m_Gameplay.FindAction("Accelerate", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Newaction = m_UI.FindAction("New action", throwIfNotFound: true);
@@ -194,14 +194,14 @@ namespace Asteroids.Inputs
         // Gameplay
         private readonly InputActionMap m_Gameplay;
         private List<IGameplayActions> m_GameplayActionsCallbackInterfaces = new List<IGameplayActions>();
-        private readonly InputAction m_Gameplay_Debug;
         private readonly InputAction m_Gameplay_Rotate;
+        private readonly InputAction m_Gameplay_Accelerate;
         public struct GameplayActions
         {
             private @GameInput m_Wrapper;
             public GameplayActions(@GameInput wrapper) { m_Wrapper = wrapper; }
-            public InputAction @Debug => m_Wrapper.m_Gameplay_Debug;
             public InputAction @Rotate => m_Wrapper.m_Gameplay_Rotate;
+            public InputAction @Accelerate => m_Wrapper.m_Gameplay_Accelerate;
             public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -211,22 +211,22 @@ namespace Asteroids.Inputs
             {
                 if (instance == null || m_Wrapper.m_GameplayActionsCallbackInterfaces.Contains(instance)) return;
                 m_Wrapper.m_GameplayActionsCallbackInterfaces.Add(instance);
-                @Debug.started += instance.OnDebug;
-                @Debug.performed += instance.OnDebug;
-                @Debug.canceled += instance.OnDebug;
                 @Rotate.started += instance.OnRotate;
                 @Rotate.performed += instance.OnRotate;
                 @Rotate.canceled += instance.OnRotate;
+                @Accelerate.started += instance.OnAccelerate;
+                @Accelerate.performed += instance.OnAccelerate;
+                @Accelerate.canceled += instance.OnAccelerate;
             }
 
             private void UnregisterCallbacks(IGameplayActions instance)
             {
-                @Debug.started -= instance.OnDebug;
-                @Debug.performed -= instance.OnDebug;
-                @Debug.canceled -= instance.OnDebug;
                 @Rotate.started -= instance.OnRotate;
                 @Rotate.performed -= instance.OnRotate;
                 @Rotate.canceled -= instance.OnRotate;
+                @Accelerate.started -= instance.OnAccelerate;
+                @Accelerate.performed -= instance.OnAccelerate;
+                @Accelerate.canceled -= instance.OnAccelerate;
             }
 
             public void RemoveCallbacks(IGameplayActions instance)
@@ -292,8 +292,8 @@ namespace Asteroids.Inputs
         public UIActions @UI => new UIActions(this);
         public interface IGameplayActions
         {
-            void OnDebug(InputAction.CallbackContext context);
             void OnRotate(InputAction.CallbackContext context);
+            void OnAccelerate(InputAction.CallbackContext context);
         }
         public interface IUIActions
         {
