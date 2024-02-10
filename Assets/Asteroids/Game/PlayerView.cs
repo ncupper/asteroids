@@ -1,4 +1,4 @@
-using System;
+using Asteroids.Inputs;
 
 using UnityEngine;
 
@@ -6,11 +6,11 @@ namespace Asteroids.Game
 {
     public class PlayerView : MonoBehaviour
     {
-        private GameInput.GameInput _gameInput;
+        private GameInput _gameInput;
 
         private void Awake()
         {
-            _gameInput = new GameInput.GameInput();
+            _gameInput = new GameInput();
             _gameInput.Enable();
         }
 
