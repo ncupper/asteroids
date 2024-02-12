@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 namespace Asteroids.Game
 {
-    public class MovableView : MonoBehaviour, IMovable
+    public class MovableView : MonoBehaviour, IMovableView
     {
         private void Awake()
         {
@@ -9,10 +9,5 @@ namespace Asteroids.Game
         }
 
         public Transform Self { get; private set; }
-
-        public void MoveTo(Vector3 to)
-        {
-            Self.position = to;
-        }
     }
 }

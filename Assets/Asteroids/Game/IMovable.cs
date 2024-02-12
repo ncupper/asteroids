@@ -3,6 +3,7 @@ namespace Asteroids.Game
 {
     public interface IMovable
     {
-        void MoveTo(Vector3 to);
+        public Vector3 Velocity { get; set; }
+        void Move(float deltaTime);
     }
 }

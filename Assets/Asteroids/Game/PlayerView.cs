@@ -11,7 +11,9 @@ namespace Asteroids.Game
         private const float Braking = 20;
         private const float Acceleration = 20;
         private const float MaxVelocity = 20;
-        
+
+        [field: SerializeField] public Transform BulletPivot { get; private set; }
+
         private GameInput _gameInput;
 
         private Vector3 _velocity;
@@ -35,7 +37,7 @@ namespace Asteroids.Game
                 angles.z += _gameInput.Gameplay.Rotate.ReadValue<float>();
                 transform.localEulerAngles = angles;
             }
-            
+
             if (_gameInput.Gameplay.Accelerate.IsPressed())
             {
                 _velocity += Time.deltaTime * Acceleration * transform.up;
@@ -58,7 +60,7 @@ namespace Asteroids.Game
             velVal = Mathf.Clamp(velVal, 0, MaxVelocity);
 
             transform.position = _field.CorrectPosition(transform.position + Time.deltaTime * velVal * _velocity.normalized);
-            
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 Debug.Log(Camera.main.WorldToViewportPoint(transform.position));
