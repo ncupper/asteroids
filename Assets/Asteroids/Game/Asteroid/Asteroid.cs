@@ -10,21 +10,20 @@ namespace Asteroids.Game
         private readonly AsteroidView _view;
         private readonly SpaceField _field;
         private readonly Vector3 _velocity;
-        private readonly int _size;
 
         public event Action<Asteroid> Destroyed;
 
         public Asteroid(AsteroidView view, int size, SpaceField field, Vector3 velocity)
         {
             _view = view;
-            _size = size;
+            Size = size;
             _field = field;
             _velocity = velocity;
         }
 
         public Vector3 Positon => _view.Self.position;
 
-        public int Size => _size;
+        public int Size { get; }
 
         public void Move(float deltaTime)
         {

@@ -10,6 +10,7 @@ namespace Asteroids
         [SerializeField] private PlayerView _playerPrefab;
         [SerializeField] private AsteroidView _asteroidPrefab;
         [SerializeField] private BulletView _bulletPrefab;
+        [SerializeField] private UfoView _ufoPrefab;
 
         private Game.Game _game;
 
@@ -19,7 +20,8 @@ namespace Asteroids
                 new SpaceField(Camera.main),
                 Instantiate(_playerPrefab),
                 Instantiate(_asteroidPrefab),
-                Instantiate(_bulletPrefab));
+                Instantiate(_bulletPrefab),
+                Instantiate(_ufoPrefab));
 
             _game.StartRound();
         }
