@@ -3,6 +3,7 @@ namespace Asteroids.Game
 {
     public class SpaceField
     {
+        private static readonly int[] SpawnQuadrants = { 0, 1, 2, 3, 4, 7, 8, 11, 12, 13, 14, 15 };
         private readonly Camera _camera;
 
         public SpaceField(Camera camera)
@@ -47,8 +48,9 @@ namespace Asteroids.Game
             return newPosition;
         }
 
-        public Vector3 GetRandomPosition(int quadrant)
+        public Vector3 GetRandomPositionForPerimeterArea()
         {
+            int quadrant = SpawnQuadrants[Random.Range(0, SpawnQuadrants.Length)];
             int x = quadrant % 4;
             int y = quadrant / 4;
             var randomViewportPos = new Vector3(Random.Range(0, 0.25f) + x * 0.25f, Random.Range(0, 0.25f) + y * 0.25f);

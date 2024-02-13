@@ -415,6 +415,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerPrefab: {fileID: 6433687966611212254, guid: d267e303c6421424394115808da07115, type: 3}
   _asteroidPrefab: {fileID: 2999048029870479542, guid: 6bc05523208cc1f4f9801e27c1b74a7a, type: 3}
+  _bulletPrefab: {fileID: -1455403016238192876, guid: d05a4bbf1b7b2ba44ad9e81a5d885838, type: 3}
 --- !u!4 &1435117040
 Transform:
   m_ObjectHideFlags: 0
