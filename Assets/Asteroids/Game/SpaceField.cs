@@ -47,7 +47,7 @@ namespace Asteroids.Game
             return newPosition;
         }
 
-        public Vector3 GetRandomPosion(int quadrant)
+        public Vector3 GetRandomPosition(int quadrant)
         {
             int x = quadrant % 4;
             int y = quadrant / 4;

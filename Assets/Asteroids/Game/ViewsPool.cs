@@ -1,20 +1,20 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using UnityEngine;
 namespace Asteroids.Game
 {
-    public class AsteroidsPool
+    public class ViewsPool<T> where T : Component
     {
-        private readonly List<AsteroidView> _pool = new();
+        private readonly List<T> _pool = new();
 
-        public AsteroidsPool(AsteroidView sample, int capacity)
+        public ViewsPool(T sample, int capacity)
         {
             _pool.Add(sample);
 
             for (var i = 1; i < capacity; ++i)
             {
-                var view = Object.Instantiate(sample.gameObject).GetComponent<AsteroidView>();
+                var view = Object.Instantiate(sample.gameObject).GetComponent<T>();
                 _pool.Add(view);
             }
 
@@ -23,15 +23,15 @@ namespace Asteroids.Game
 
         public void HideAll()
         {
-            foreach (AsteroidView view in _pool)
+            foreach (T view in _pool)
             {
                 view.gameObject.SetActive(false);
             }
         }
 
-        public AsteroidView Get()
+        public T Get()
         {
-            foreach (AsteroidView view in _pool)
+            foreach (T view in _pool)
             {
                 if (!view.gameObject.activeSelf)
                 {
@@ -40,7 +40,7 @@ namespace Asteroids.Game
                 }
             }
 
-            var newVview = Object.Instantiate(_pool.First().gameObject).GetComponent<AsteroidView>();
+            var newVview = Object.Instantiate(_pool.First().gameObject).GetComponent<T>();
             _pool.Add(newVview);
             return newVview;
         }
