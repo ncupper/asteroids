@@ -1,12 +1,8 @@
-using System;
-
 using UnityEngine;
 namespace Asteroids.Game
 {
     public class AsteroidView : MovableView
     {
-        [field: SerializeField] public Collider2D Collider { get; private set; }
-
         public int Size
         {
             get => Mathf.RoundToInt(Self.localScale.x * 100);

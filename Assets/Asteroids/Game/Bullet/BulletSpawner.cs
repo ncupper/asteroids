@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Asteroids.Game
 {
-    public class Bullets
+    public class BulletSpawner
     {
         private const float BulletSpeed = 30.0f;
         private const float BulletSpawnDelaySeconds = 0.2f;
@@ -15,7 +15,7 @@ namespace Asteroids.Game
 
         private float _spawnTimer;
 
-        public Bullets(SpaceField field, BulletView bulletSample, Transform spawnPivot)
+        public BulletSpawner(SpaceField field, BulletView bulletSample, Transform spawnPivot)
         {
             _field = field;
             _spawnPivot = spawnPivot;
@@ -23,26 +23,29 @@ namespace Asteroids.Game
             _bullets = new ItemsContainer<Bullet>();
         }
 
-        public IReadOnlyList<ICollideable> ActiveBullets => _bullets.GetItems();
+        public IReadOnlyList<ICollideable> BulletColliders => _bullets.GetItems();
+        public IReadOnlyList<IMovable> BulletMovers => _bullets.GetItems();
 
         public void HideAll()
         {
             _bullets.ClearAll();
         }
 
-        public void Simulate(float deltaTime)
+        public void DestroyOutOfFieldBullets()
         {
             IReadOnlyList<Bullet> items = _bullets.GetItems();
 
             foreach (Bullet bullet in items)
             {
-                bullet.Move(deltaTime);
                 if (_field.IsOut(bullet.Positon))
                 {
                     bullet.Destroy();
                 }
             }
+        }
 
+        public void IncSpawnTimer(float deltaTime)
+        {
             _spawnTimer += deltaTime;
             if (_spawnTimer.CompareTo(BulletSpawnDelaySeconds) >= 0)
             {
@@ -57,7 +60,7 @@ namespace Asteroids.Game
             view.Self.position = _spawnPivot.position;
             Vector3 velocity = _spawnPivot.up * BulletSpeed;
 
-            var bullet = new Bullet(view, _field, velocity);
+            var bullet = new Bullet(view, velocity);
             _bullets.Add(bullet);
         }
 

@@ -3,7 +3,7 @@ namespace Asteroids.Game
     public class Game
     {
         private readonly Asteroids _asteroids;
-        private readonly Bullets _bullets;
+        private readonly BulletSimulator _bullets;
         private readonly SpaceField _field;
         private Ufo _ufo;
 
@@ -14,7 +14,7 @@ namespace Asteroids.Game
             _field = field;
             Player = new Player(playerView, _field);
             _asteroids = new Asteroids(_field, asteroidView);
-            _bullets = new Bullets(_field, bulletView, playerView.BulletPivot);
+            _bullets = new BulletSimulator(_field, bulletView, playerView.BulletPivot);
             _ufo = new Ufo(ufoView, _field, playerView.transform);
         }
 

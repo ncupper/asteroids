@@ -165,4 +165,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1de5ac243c6c47dcba25368e5088933f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Collider>k__BackingField: {fileID: 2370919557193751857}
   <BulletPivot>k__BackingField: {fileID: 5111459236225064071}
