@@ -22,14 +22,6 @@ namespace Asteroids.Game
             _asteroids = new ItemsContainer<Asteroid>();
         }
 
-        private void Spawn(Vector3 position, Vector3 velocity, int size)
-        {
-            AsteroidView view = _viewsPool.Get();
-            view.Self.position = position;
-            view.Size = size;
-            _asteroids.Add(new Asteroid(view, size, _field, velocity));
-        }
-
         public void HideAll()
         {
             _asteroids.ClearAll();
@@ -47,7 +39,7 @@ namespace Asteroids.Game
             }
         }
 
-        public void Update(float deltaTime, IReadOnlyList<ICollideable> bullets)
+        public void Simulate(float deltaTime, IReadOnlyList<ICollideable> bullets)
         {
             IReadOnlyList<Asteroid> items = _asteroids.GetItems();
             foreach (Asteroid asteroid in items)
@@ -66,6 +58,14 @@ namespace Asteroids.Game
                     asteroid.Destroy();
                 }
             }
+        }
+
+        private void Spawn(Vector3 position, Vector3 velocity, int size)
+        {
+            AsteroidView view = _viewsPool.Get();
+            view.Self.position = position;
+            view.Size = size;
+            _asteroids.Add(new Asteroid(view, size, _field, velocity));
         }
 
     }

@@ -5,7 +5,7 @@ namespace Asteroids.Game
 {
     public class Bullets
     {
-        private const float BulletSpeed = 20.0f;
+        private const float BulletSpeed = 30.0f;
         private const float BulletSpawnDelaySeconds = 0.2f;
 
         private readonly ViewsPool<BulletView> _viewsPool;
@@ -30,7 +30,7 @@ namespace Asteroids.Game
             _bullets.ClearAll();
         }
 
-        public void Update(float deltaTime)
+        public void Simulate(float deltaTime)
         {
             IReadOnlyList<Bullet> items = _bullets.GetItems();
 

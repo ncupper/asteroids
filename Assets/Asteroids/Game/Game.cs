@@ -7,9 +7,12 @@ namespace Asteroids.Game
         private readonly SpaceField _field;
         private Ufo _ufo;
 
+        public Player Player { get; }
+
         public Game(SpaceField field, PlayerView playerView, AsteroidView asteroidView, BulletView bulletView, UfoView ufoView)
         {
             _field = field;
+            Player = new Player(playerView, _field);
             _asteroids = new Asteroids(_field, asteroidView);
             _bullets = new Bullets(_field, bulletView, playerView.BulletPivot);
             _ufo = new Ufo(ufoView, _field, playerView.transform);
@@ -21,10 +24,11 @@ namespace Asteroids.Game
             _asteroids.StartupSpawn(round + 6);
         }
 
-        public void Update(float deltaTime)
+        public void Simulate(float deltaTime)
         {
-            _asteroids.Update(deltaTime, _bullets.ActiveBullets);
-            _bullets.Update(deltaTime);
+            Player.Simulate(deltaTime);
+            _bullets.Simulate(deltaTime);
+            _asteroids.Simulate(deltaTime, _bullets.ActiveBullets);
 
             if (_ufo != null)
             {
