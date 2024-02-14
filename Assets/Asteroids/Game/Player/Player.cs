@@ -1,46 +1,50 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using Asteroids.Inputs;
 
 using UnityEngine;
 namespace Asteroids.Game
 {
-    public class Player
+    public class Player : IDestroyable
     {
         private const float Braking = 20;
         private const float Acceleration = 20;
         private const float MaxVelocity = 20;
 
         private readonly PlayerView _view;
-        private GameInput _gameInput;
+        private readonly SpaceField _field;
 
         private Vector3 _velocity;
         private Vector3 _accelerate;
 
-        private SpaceField _field;
-
         public Player(PlayerView view, SpaceField field)
         {
             _view = view;
-
             _field = field;
 
-            _gameInput = new GameInput();
-            _gameInput.Enable();
-
-            VelocityValue = new ObservableVar<float>();
+            VelocityValue = new ObservableVariable<float>();
         }
 
-        public ObservableVar<float> VelocityValue { get; private set; }
+        public ObservableVariable<float> VelocityValue { get; private set; }
 
-        public void UpdateInput(float deltaTime)
+        public void Spawn()
         {
-            if (_gameInput.Gameplay.Rotate.IsInProgress())
+            _view.gameObject.SetActive(true);
+            _view.Self.position = Vector3.zero;
+        }
+
+        public void UpdateInput(GameInput gameInput, float deltaTime)
+        {
+            if (gameInput.Gameplay.Rotate.IsInProgress())
             {
                 Vector3 angles = _view.Self.localEulerAngles;
-                angles.z += _gameInput.Gameplay.Rotate.ReadValue<float>();
+                angles.z += gameInput.Gameplay.Rotate.ReadValue<float>();
                 _view.Self.localEulerAngles = angles;
             }
 
-            if (_gameInput.Gameplay.Accelerate.IsPressed())
+            if (gameInput.Gameplay.Accelerate.IsPressed())
             {
                 _velocity += deltaTime * Acceleration * _view.Self.up;
             }
@@ -64,9 +68,24 @@ namespace Asteroids.Game
             VelocityValue.Value = velVal;
         }
 
-        public void Simulate(float deltaTime)
+        public void Simulate(float deltaTime, IReadOnlyList<ICollideable> asteroids, ICollideable ufo)
         {
             _view.Self.position = _field.CorrectPosition(_view.Self.position + deltaTime * VelocityValue.Value * _velocity.normalized);
+
+            ICollideable hit = asteroids.FirstOrDefault(x => _view.Collider.Distance(x.Collider).isOverlapped);
+            if (hit != null
+                || (ufo != null && _view.Collider.Distance(ufo.Collider).isOverlapped))
+            {
+                Destroy();
+            }
+        }
+
+        public event Action<IDestroyable> Destroyed;
+
+        public void Destroy()
+        {
+            _view.gameObject.SetActive(false);
+            Destroyed?.Invoke(this);
         }
     }
 }

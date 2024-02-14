@@ -14,10 +14,9 @@ namespace Asteroids
         [SerializeField] private BulletView _bulletPrefab;
         [SerializeField] private UfoView _ufoPrefab;
         [Header("GUI")]
-        [SerializeField] private MainGameView _mainGameView;
+        [SerializeField] private UISwitcher _uiSwitcher;
 
         private Game.Game _game;
-        private MainGame _mainGame;
 
         private void Awake()
         {
@@ -26,16 +25,15 @@ namespace Asteroids
                 Instantiate(_playerPrefab),
                 Instantiate(_asteroidPrefab),
                 Instantiate(_bulletPrefab),
-                Instantiate(_ufoPrefab));
-
-            _mainGame = new MainGame(_mainGameView, _game.Player.VelocityValue);
+                Instantiate(_ufoPrefab),
+                _uiSwitcher);
 
             _game.StartRound();
         }
 
         private void Update()
         {
-            _game.Player.UpdateInput(Time.deltaTime);
+            _game.UpdateInput(Time.deltaTime);
         }
 
         private void FixedUpdate()

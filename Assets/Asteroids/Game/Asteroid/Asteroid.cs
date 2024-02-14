@@ -1,51 +1,41 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using Asteroids.Game.Actors;
 
 using UnityEngine;
 namespace Asteroids.Game
 {
-    public class Asteroid : IMovable, IDestroyable<Asteroid>
+    public class Asteroid : Actor<AsteroidView>
     {
-        private readonly AsteroidView _view;
         private readonly SpaceField _field;
         private readonly Vector3 _velocity;
 
-        public event Action<Asteroid> Destroyed;
-
         public Asteroid(AsteroidView view, int size, SpaceField field, Vector3 velocity)
+            : base(view)
         {
-            _view = view;
             Size = size;
             _field = field;
             _velocity = velocity;
         }
 
-        public Vector3 Positon => _view.Self.position;
-
         public int Size { get; }
 
-        public void Move(float deltaTime)
+        public override void Move(float deltaTime)
         {
-            Vector3 pos = _view.Self.position + deltaTime * _velocity;
+            Vector3 pos = View.Self.position + deltaTime * _velocity;
             pos = _field.CorrectPosition(pos);
-            _view.Self.position = pos;
+            View.Self.position = pos;
         }
 
         public bool IsAnyTouch(IReadOnlyList<ICollideable> bullets)
         {
-            ICollideable hit = bullets.FirstOrDefault(x => _view.Collider.Distance(x.Collider).isOverlapped);
+            ICollideable hit = bullets.FirstOrDefault(x => View.Collider.Distance(x.Collider).isOverlapped);
             if (hit != null)
             {
                 hit.Collide();
             }
             return hit != null;
-        }
-
-        public void Destroy()
-        {
-            _view.gameObject.SetActive(false);
-            Destroyed?.Invoke(this);
         }
     }
 }

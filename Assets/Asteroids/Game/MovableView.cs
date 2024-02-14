@@ -1,15 +1,16 @@
 ﻿using UnityEngine;
 namespace Asteroids.Game
 {
-    public class MovableView : MonoBehaviour, IMovableView
+    [RequireComponent(typeof(Collider2D))]
+    public class MovableView : MonoBehaviour
     {
-        [field: SerializeField] public Collider2D Collider { get; private set; }
-
         private void Awake()
         {
             Self = transform;
+            Collider = GetComponent<Collider2D>();
         }
 
         public Transform Self { get; private set; }
+        public Collider2D Collider { get; private set; }
     }
 }

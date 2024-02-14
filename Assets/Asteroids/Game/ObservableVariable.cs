@@ -1,7 +1,7 @@
 using System;
 namespace Asteroids.Game
 {
-    public class ObservableVar<T> : IObservable<T>
+    public class ObservableVariable<T> : IObservableVariable<T>
     {
         private T _value;
 

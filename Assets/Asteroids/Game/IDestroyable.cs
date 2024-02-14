@@ -2,9 +2,9 @@ using System;
 
 namespace Asteroids.Game
 {
-    public interface IDestroyable<out T>
+    public interface IDestroyable
     {
-        event Action<T> Destroyed;
+        event Action<IDestroyable> Destroyed;
 
         void Destroy();
     }

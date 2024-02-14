@@ -1,47 +1,37 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using Asteroids.Game.Actors;
 
 using UnityEngine;
 namespace Asteroids.Game
 {
-    public class Ufo : IMovable, IDestroyable<Ufo>
+    public class Ufo : Actor<UfoView>
     {
         private const float UfoSpeed = 10.0f;
 
-        private readonly UfoView _view;
         private readonly Transform _target;
 
         public Ufo(UfoView view, SpaceField field, Transform target)
+            : base(view)
         {
-            _view = view;
             _target = target;
-            _view.Self.position = field.GetRandomPositionForPerimeterArea();
+            View.Self.position = field.GetRandomPositionForPerimeterArea();
         }
 
-        public event Action<Ufo> Destroyed;
-
-        public Vector3 Positon => _view.Self.position;
-
-        public void Move(float deltaTime)
+        public override void Move(float deltaTime)
         {
-            Vector3 position = _view.Self.position;
+            Vector3 position = View.Self.position;
             Vector3 targetDir = (_target.position - position).normalized;
-            Vector3 angles = Quaternion.FromToRotation(_view.Self.up, targetDir).eulerAngles;
+            Vector3 angles = Quaternion.FromToRotation(View.Self.up, targetDir).eulerAngles;
 
-            _view.Self.localEulerAngles += new Vector3(0, 0, angles.z);
-            _view.Self.position = position + deltaTime * UfoSpeed * _view.Self.up;
-        }
-
-        public void Destroy()
-        {
-            _view.gameObject.SetActive(false);
-            Destroyed?.Invoke(this);
+            View.Self.localEulerAngles += new Vector3(0, 0, angles.z);
+            View.Self.position = position + deltaTime * UfoSpeed * View.Self.up;
         }
 
         public bool IsAnyTouch(IReadOnlyList<ICollideable> bullets)
         {
-            ICollideable hit = bullets.FirstOrDefault(x => _view.Collider.Distance(x.Collider).isOverlapped);
+            ICollideable hit = bullets.FirstOrDefault(x => View.Collider.Distance(x.Collider).isOverlapped);
             if (hit != null)
             {
                 hit.Collide();

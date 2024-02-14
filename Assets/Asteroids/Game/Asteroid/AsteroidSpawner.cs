@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 using UnityEngine;
 namespace Asteroids.Game
 {
-    public class Asteroids
+    public class AsteroidSpawner
     {
         private const int BigSize = 120;
         private const int BigSpeed = 10;
@@ -15,21 +15,19 @@ namespace Asteroids.Game
         private readonly ItemsContainer<Asteroid> _asteroids;
         private readonly SpaceField _field;
 
-        public Asteroids(SpaceField field, AsteroidView asteroidSample)
+        public AsteroidSpawner(SpaceField field, AsteroidView asteroidSample)
         {
             _field = field;
+
             _viewsPool = new ViewsPool<AsteroidView>(asteroidSample, 10);
             _asteroids = new ItemsContainer<Asteroid>();
         }
 
-        public void HideAll()
-        {
-            _asteroids.ClearAll();
-        }
+        public IReadOnlyList<Asteroid> ActiveAsteroids => _asteroids.GetItems();
 
         public void StartupSpawn(int count)
         {
-            _viewsPool.HideAll();
+            _asteroids.ClearAll();
 
             for (var i = 0; i < count; ++i)
             {
@@ -39,24 +37,12 @@ namespace Asteroids.Game
             }
         }
 
-        public void Simulate(float deltaTime, IReadOnlyList<ICollideable> bullets)
+        public void SpawnPieces(Vector3 pivot)
         {
-            IReadOnlyList<Asteroid> items = _asteroids.GetItems();
-            foreach (Asteroid asteroid in items)
+            for (var i = 0; i < Pieces; ++i)
             {
-                asteroid.Move(deltaTime);
-                if (asteroid.IsAnyTouch(bullets))
-                {
-                    if (asteroid.Size == BigSize)
-                    {
-                        for (var i = 0; i < Pieces; ++i)
-                        {
-                            Vector3 velocity = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * SmallSpeed;
-                            Spawn(asteroid.Positon, velocity, SmallSize);
-                        }
-                    }
-                    asteroid.Destroy();
-                }
+                Vector3 velocity = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * SmallSpeed;
+                Spawn(pivot, velocity, SmallSize);
             }
         }
 

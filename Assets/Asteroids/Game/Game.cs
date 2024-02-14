@@ -1,34 +1,60 @@
+using Asteroids.GUI;
+using Asteroids.Inputs;
 namespace Asteroids.Game
 {
     public class Game
     {
-        private readonly Asteroids _asteroids;
+        private readonly UISwitcher _uiSwitcher;
+        private readonly AsteroidSimulator _asteroidSimulator;
         private readonly BulletSimulator _bullets;
-        private readonly SpaceField _field;
         private Ufo _ufo;
+        private readonly Player _player;
+        private readonly GameInput _gameInput;
 
-        public Player Player { get; }
+        private IObservableVariable<int> _scores;
 
-        public Game(SpaceField field, PlayerView playerView, AsteroidView asteroidView, BulletView bulletView, UfoView ufoView)
+        public Game(SpaceField field,
+            PlayerView playerView, AsteroidView asteroidView, BulletView bulletView, UfoView ufoView,
+            UISwitcher uiSwitcher)
         {
-            _field = field;
-            Player = new Player(playerView, _field);
-            _asteroids = new Asteroids(_field, asteroidView);
-            _bullets = new BulletSimulator(_field, bulletView, playerView.BulletPivot);
-            _ufo = new Ufo(ufoView, _field, playerView.transform);
+            _uiSwitcher = uiSwitcher;
+
+            _gameInput = new GameInput();
+            _gameInput.Enable();
+
+            _scores = new ObservableVariable<int>();
+
+            _player = new Player(playerView, field);
+            _asteroidSimulator = new AsteroidSimulator(field, asteroidView);
+            _bullets = new BulletSimulator(field, bulletView, playerView.BulletPivot);
+            _ufo = new Ufo(ufoView, field, playerView.transform);
+
+            _uiSwitcher.Setup(_player.VelocityValue, _scores);
+            _gameInput.Gameplay.Enable();
+            _gameInput.UI.Disable();
         }
 
         public void StartRound(int round = 0)
         {
-            _asteroids.HideAll();
-            _asteroids.StartupSpawn(round + 6);
+            _uiSwitcher.SwitchTo(UIMode.MainGame);
+
+            _player.Spawn();
+
+            _bullets.HideAll();
+
+            _asteroidSimulator.StartupSpawn(round + 6);
+        }
+
+        public void UpdateInput(float deltaTime)
+        {
+            _player.UpdateInput(_gameInput, deltaTime);
         }
 
         public void Simulate(float deltaTime)
         {
-            Player.Simulate(deltaTime);
+            _player.Simulate(deltaTime, _asteroidSimulator.ActiveAsteroids, _ufo);
             _bullets.Simulate(deltaTime);
-            _asteroids.Simulate(deltaTime, _bullets.ActiveBullets);
+            _asteroidSimulator.Simulate(deltaTime, _bullets.ActiveBullets);
 
             if (_ufo != null)
             {

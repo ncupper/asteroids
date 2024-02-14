@@ -1,17 +1,17 @@
 using System.Collections.Generic;
 namespace Asteroids.Game
 {
-    public class ItemsContainer<T> where T : IDestroyable<T>
+    public class ItemsContainer<T> where T : IDestroyable
     {
         private readonly List<T> _items;
         private readonly List<T> _newItems;
-        private readonly List<T> _destroyedItems;
+        private readonly List<IDestroyable> _destroyedItems;
 
         public ItemsContainer()
         {
             _items = new List<T>();
             _newItems = new List<T>();
-            _destroyedItems = new List<T>();
+            _destroyedItems = new List<IDestroyable>();
         }
 
         public void Add(T item)
@@ -49,7 +49,7 @@ namespace Asteroids.Game
             _newItems.Clear();
         }
 
-        private void OnItemDestroyed(T item)
+        private void OnItemDestroyed(IDestroyable item)
         {
             item.Destroyed -= OnItemDestroyed;
             _destroyedItems.Add(item);
