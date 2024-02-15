@@ -27,15 +27,5 @@ namespace Asteroids.Game
             pos = _field.CorrectPosition(pos);
             View.Self.position = pos;
         }
-
-        public bool IsAnyTouch(IReadOnlyList<ICollideable> bullets)
-        {
-            ICollideable hit = bullets.FirstOrDefault(x => View.Collider.Distance(x.Collider).isOverlapped);
-            if (hit != null)
-            {
-                hit.Collide();
-            }
-            return hit != null;
-        }
     }
 }

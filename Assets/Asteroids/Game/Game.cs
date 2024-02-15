@@ -30,6 +30,8 @@ namespace Asteroids.Game
             _ufo = new Ufo(ufoView, field, playerView.transform);
 
             _uiSwitcher.Setup(_player.VelocityValue, _scores);
+
+            _uiSwitcher.SwitchTo(UIMode.StartGame);
             _gameInput.Gameplay.Enable();
             _gameInput.UI.Disable();
         }
@@ -52,19 +54,32 @@ namespace Asteroids.Game
 
         public void Simulate(float deltaTime)
         {
-            _player.Simulate(deltaTime, _asteroidSimulator.ActiveAsteroids, _ufo);
+            _player.Move(deltaTime);
+
             _bullets.Simulate(deltaTime);
             _asteroidSimulator.Simulate(deltaTime, _bullets.ActiveBullets);
 
-            if (_ufo != null)
+            if (_ufo.IsAlive)
             {
                 _ufo.Move(deltaTime);
-                if (_ufo.IsAnyTouch(_bullets.ActiveBullets))
+                ICollideable hitBullet = _ufo.GetTouch(_bullets.ActiveBullets);
+                if (hitBullet != null)
                 {
+                    hitBullet.Collide();
                     _ufo.Destroy();
-                    _ufo = null;
                 }
             }
+
+            if (_player.GetTouch(_asteroidSimulator.ActiveAsteroids) != null
+                || (_ufo.IsAlive && _player.IsTouchWith(_ufo)))
+            {
+                GameOver();
+            }
+        }
+
+        private void GameOver()
+        {
+            _player.Destroy();
         }
     }
 }

@@ -27,8 +27,11 @@ namespace Asteroids.Game
             foreach (Asteroid asteroid in items)
             {
                 asteroid.Move(deltaTime);
-                if (asteroid.IsAnyTouch(bullets))
+
+                ICollideable hitBullet = asteroid.GetTouch(bullets);
+                if (hitBullet != null)
                 {
+                    hitBullet.Collide();
                     if (asteroid.Size == BigSize)
                     {
                         _spawner.SpawnPieces(asteroid.Positon);

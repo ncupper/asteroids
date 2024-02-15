@@ -21,6 +21,12 @@ namespace Asteroids.GUI
             _scores.Changed += OnScoresChanged;
         }
 
+        public void Dispose()
+        {
+            _playerSpeed.Changed -= OnPlayerSpeedChanged;
+            _scores.Changed -= OnScoresChanged;
+        }
+
         private void OnPlayerSpeedChanged(float value)
         {
             _view.PlayerVelocity.text = value.ToString("0.0");
@@ -29,12 +35,6 @@ namespace Asteroids.GUI
         private void OnScoresChanged(int value)
         {
             _view.Scores.text = value.ToString();
-        }
-
-        public void Dispose()
-        {
-            _playerSpeed.Changed -= OnPlayerSpeedChanged;
-            _scores.Changed -= OnScoresChanged;
         }
     }
 }

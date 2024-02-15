@@ -2,26 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using Asteroids.Game.Actors;
 using Asteroids.Inputs;
 
 using UnityEngine;
 namespace Asteroids.Game
 {
-    public class Player : IDestroyable
+    public class Player : Actor<PlayerView>
     {
         private const float Braking = 20;
         private const float Acceleration = 20;
         private const float MaxVelocity = 20;
 
-        private readonly PlayerView _view;
         private readonly SpaceField _field;
 
         private Vector3 _velocity;
         private Vector3 _accelerate;
 
-        public Player(PlayerView view, SpaceField field)
+        public Player(PlayerView view, SpaceField field) : base(view)
         {
-            _view = view;
             _field = field;
 
             VelocityValue = new ObservableVariable<float>();
@@ -31,22 +30,22 @@ namespace Asteroids.Game
 
         public void Spawn()
         {
-            _view.gameObject.SetActive(true);
-            _view.Self.position = Vector3.zero;
+            View.gameObject.SetActive(true);
+            View.Self.position = Vector3.zero;
         }
 
         public void UpdateInput(GameInput gameInput, float deltaTime)
         {
             if (gameInput.Gameplay.Rotate.IsInProgress())
             {
-                Vector3 angles = _view.Self.localEulerAngles;
+                Vector3 angles = View.Self.localEulerAngles;
                 angles.z += gameInput.Gameplay.Rotate.ReadValue<float>();
-                _view.Self.localEulerAngles = angles;
+                View.Self.localEulerAngles = angles;
             }
 
             if (gameInput.Gameplay.Accelerate.IsPressed())
             {
-                _velocity += deltaTime * Acceleration * _view.Self.up;
+                _velocity += deltaTime * Acceleration * View.Self.up;
             }
             else
             {
@@ -68,24 +67,9 @@ namespace Asteroids.Game
             VelocityValue.Value = velVal;
         }
 
-        public void Simulate(float deltaTime, IReadOnlyList<ICollideable> asteroids, ICollideable ufo)
+        public override void Move(float deltaTime)
         {
-            _view.Self.position = _field.CorrectPosition(_view.Self.position + deltaTime * VelocityValue.Value * _velocity.normalized);
-
-            ICollideable hit = asteroids.FirstOrDefault(x => _view.Collider.Distance(x.Collider).isOverlapped);
-            if (hit != null
-                || (ufo != null && _view.Collider.Distance(ufo.Collider).isOverlapped))
-            {
-                Destroy();
-            }
-        }
-
-        public event Action<IDestroyable> Destroyed;
-
-        public void Destroy()
-        {
-            _view.gameObject.SetActive(false);
-            Destroyed?.Invoke(this);
+            View.Self.position = _field.CorrectPosition(View.Self.position + deltaTime * VelocityValue.Value * _velocity.normalized);
         }
     }
 }

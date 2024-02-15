@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using UnityEngine;
 namespace Asteroids.Game.Actors
@@ -11,6 +13,8 @@ namespace Asteroids.Game.Actors
         {
             View = view;
         }
+
+        public bool IsAlive => View.gameObject.activeSelf;
 
         public event Action<IDestroyable> Destroyed;
 
@@ -29,6 +33,16 @@ namespace Asteroids.Game.Actors
         public void Collide()
         {
             Destroy();
+        }
+
+        public bool IsTouchWith(ICollideable collideable)
+        {
+            return View.Collider.Distance(collideable.Collider).isOverlapped;
+        }
+
+        public ICollideable GetTouch(IReadOnlyCollection<ICollideable> collideables)
+        {
+            return collideables.FirstOrDefault(x => View.Collider.Distance(x.Collider).isOverlapped);
         }
     }
 }
