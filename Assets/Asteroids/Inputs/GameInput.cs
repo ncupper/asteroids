@@ -46,6 +46,15 @@ namespace Asteroids.Inputs
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LaserFire"",
+                    ""type"": ""Button"",
+                    ""id"": ""616094d9-96d6-4b20-96e1-975e7114c58e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -92,36 +101,25 @@ namespace Asteroids.Inputs
                     ""action"": ""Accelerate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""eb861838-f64a-46f6-a904-1054769f4a30"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LaserFire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
         {
             ""name"": ""UI"",
             ""id"": ""fa4d164b-5169-4762-b97e-f0eb048c4ca0"",
-            ""actions"": [
-                {
-                    ""name"": ""New action"",
-                    ""type"": ""Button"",
-                    ""id"": ""69fc55d2-5138-4b14-a741-5c0b21cb0046"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""b6d6ed2f-4b84-4a15-a4d0-66a2b54bf06f"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""New action"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                }
-            ]
+            ""actions"": [],
+            ""bindings"": []
         }
     ],
     ""controlSchemes"": []
@@ -130,9 +128,9 @@ namespace Asteroids.Inputs
             m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
             m_Gameplay_Rotate = m_Gameplay.FindAction("Rotate", throwIfNotFound: true);
             m_Gameplay_Accelerate = m_Gameplay.FindAction("Accelerate", throwIfNotFound: true);
+            m_Gameplay_LaserFire = m_Gameplay.FindAction("LaserFire", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
-            m_UI_Newaction = m_UI.FindAction("New action", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -196,12 +194,14 @@ namespace Asteroids.Inputs
         private List<IGameplayActions> m_GameplayActionsCallbackInterfaces = new List<IGameplayActions>();
         private readonly InputAction m_Gameplay_Rotate;
         private readonly InputAction m_Gameplay_Accelerate;
+        private readonly InputAction m_Gameplay_LaserFire;
         public struct GameplayActions
         {
             private @GameInput m_Wrapper;
             public GameplayActions(@GameInput wrapper) { m_Wrapper = wrapper; }
             public InputAction @Rotate => m_Wrapper.m_Gameplay_Rotate;
             public InputAction @Accelerate => m_Wrapper.m_Gameplay_Accelerate;
+            public InputAction @LaserFire => m_Wrapper.m_Gameplay_LaserFire;
             public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -217,6 +217,9 @@ namespace Asteroids.Inputs
                 @Accelerate.started += instance.OnAccelerate;
                 @Accelerate.performed += instance.OnAccelerate;
                 @Accelerate.canceled += instance.OnAccelerate;
+                @LaserFire.started += instance.OnLaserFire;
+                @LaserFire.performed += instance.OnLaserFire;
+                @LaserFire.canceled += instance.OnLaserFire;
             }
 
             private void UnregisterCallbacks(IGameplayActions instance)
@@ -227,6 +230,9 @@ namespace Asteroids.Inputs
                 @Accelerate.started -= instance.OnAccelerate;
                 @Accelerate.performed -= instance.OnAccelerate;
                 @Accelerate.canceled -= instance.OnAccelerate;
+                @LaserFire.started -= instance.OnLaserFire;
+                @LaserFire.performed -= instance.OnLaserFire;
+                @LaserFire.canceled -= instance.OnLaserFire;
             }
 
             public void RemoveCallbacks(IGameplayActions instance)
@@ -248,12 +254,10 @@ namespace Asteroids.Inputs
         // UI
         private readonly InputActionMap m_UI;
         private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
-        private readonly InputAction m_UI_Newaction;
         public struct UIActions
         {
             private @GameInput m_Wrapper;
             public UIActions(@GameInput wrapper) { m_Wrapper = wrapper; }
-            public InputAction @Newaction => m_Wrapper.m_UI_Newaction;
             public InputActionMap Get() { return m_Wrapper.m_UI; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -263,16 +267,10 @@ namespace Asteroids.Inputs
             {
                 if (instance == null || m_Wrapper.m_UIActionsCallbackInterfaces.Contains(instance)) return;
                 m_Wrapper.m_UIActionsCallbackInterfaces.Add(instance);
-                @Newaction.started += instance.OnNewaction;
-                @Newaction.performed += instance.OnNewaction;
-                @Newaction.canceled += instance.OnNewaction;
             }
 
             private void UnregisterCallbacks(IUIActions instance)
             {
-                @Newaction.started -= instance.OnNewaction;
-                @Newaction.performed -= instance.OnNewaction;
-                @Newaction.canceled -= instance.OnNewaction;
             }
 
             public void RemoveCallbacks(IUIActions instance)
@@ -294,10 +292,10 @@ namespace Asteroids.Inputs
         {
             void OnRotate(InputAction.CallbackContext context);
             void OnAccelerate(InputAction.CallbackContext context);
+            void OnLaserFire(InputAction.CallbackContext context);
         }
         public interface IUIActions
         {
-            void OnNewaction(InputAction.CallbackContext context);
         }
     }
 }

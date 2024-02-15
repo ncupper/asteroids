@@ -31,6 +31,7 @@ namespace Asteroids.Game
         public void Spawn()
         {
             View.gameObject.SetActive(true);
+            View.Laser.gameObject.SetActive(false);
             View.Self.position = Vector3.zero;
         }
 
