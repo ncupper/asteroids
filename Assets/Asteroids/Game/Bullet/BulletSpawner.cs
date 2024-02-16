@@ -6,7 +6,7 @@ namespace Asteroids.Game
     public class BulletSpawner
     {
         private const float BulletSpeed = 30.0f;
-        private const float BulletSpawnDelaySeconds = 0.2f;
+        private const float BulletSpawnDelaySeconds = 0.15f;
 
         private readonly ViewsPool<BulletView> _viewsPool;
         private readonly ItemsContainer<Bullet> _bullets;
@@ -58,8 +58,9 @@ namespace Asteroids.Game
         {
             BulletView view = _viewsPool.Get();
             view.Self.position = _spawnPivot.position;
-            Vector3 velocity = _spawnPivot.up * BulletSpeed;
+            view.gameObject.SetActive(true);
 
+            Vector3 velocity = _spawnPivot.up * BulletSpeed;
             var bullet = new Bullet(view, velocity);
             _bullets.Add(bullet);
         }

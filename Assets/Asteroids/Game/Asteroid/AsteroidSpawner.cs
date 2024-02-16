@@ -56,6 +56,7 @@ namespace Asteroids.Game
             AsteroidView view = _viewsPool.Get();
             view.Self.position = position;
             view.Size = size;
+            view.gameObject.SetActive(true);
             _asteroids.Add(new Asteroid(view, size, _field, velocity));
         }
 

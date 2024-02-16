@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 
-using UnityEngine;
 namespace Asteroids.Game
 {
     public class AsteroidSimulator

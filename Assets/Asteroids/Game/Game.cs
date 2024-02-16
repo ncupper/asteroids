@@ -113,7 +113,8 @@ namespace Asteroids.Game
 
             StartRound();
 
-            await Task.Delay(100);
+            await Task.Yield();
+            await Task.Yield();
 
             _isPaused = false;
         }

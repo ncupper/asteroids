@@ -35,14 +35,13 @@ namespace Asteroids.Game
             {
                 if (!view.gameObject.activeSelf)
                 {
-                    view.gameObject.SetActive(true);
                     return view;
                 }
             }
 
-            var newVview = Object.Instantiate(_pool.First().gameObject).GetComponent<T>();
-            _pool.Add(newVview);
-            return newVview;
+            var newView = Object.Instantiate(_pool.First().gameObject).GetComponent<T>();
+            _pool.Add(newView);
+            return newView;
         }
     }
 }

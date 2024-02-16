@@ -8,7 +8,7 @@ namespace Asteroids.Game
 {
     public class Ufo : Actor<UfoView>
     {
-        private const float UfoSpeed = 10.0f;
+        private const float UfoSpeed = 5.0f;
 
         private readonly SpaceField _field;
         private readonly Transform _target;

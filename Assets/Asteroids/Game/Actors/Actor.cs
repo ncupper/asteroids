@@ -42,7 +42,7 @@ namespace Asteroids.Game.Actors
 
         public ICollideable GetTouch(IReadOnlyCollection<ICollideable> collideables)
         {
-            return collideables.FirstOrDefault(x => View.Collider.Distance(x.Collider).isOverlapped);
+            return collideables.FirstOrDefault(x => x.IsAlive && View.Collider.Distance(x.Collider).isOverlapped);
         }
     }
 }
