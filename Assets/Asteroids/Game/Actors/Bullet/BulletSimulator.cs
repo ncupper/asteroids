@@ -19,7 +19,7 @@ namespace Asteroids.Game
             _spawner.HideAll();
         }
 
-        public void Simulate(float deltaTime)
+        public void Simulate(float deltaTime, IReadOnlyList<ICollideable> collideables)
         {
             IReadOnlyList<IMovable> items = _spawner.BulletMovers;
 

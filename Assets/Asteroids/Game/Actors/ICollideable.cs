@@ -12,6 +12,6 @@ namespace Asteroids.Game
         void Collide();
 
         bool IsTouchWith(ICollideable collideable);
-        ICollideable GetTouch(IReadOnlyCollection<ICollideable> collideables);
+        ICollideable GetTouch(IReadOnlyCollection<ICollideable> collideables, int layer);
     }
 }

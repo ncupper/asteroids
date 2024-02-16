@@ -40,9 +40,12 @@ namespace Asteroids.Game.Actors
             return View.Collider.Distance(collideable.Collider).isOverlapped;
         }
 
-        public ICollideable GetTouch(IReadOnlyCollection<ICollideable> collideables)
+        public ICollideable GetTouch(IReadOnlyCollection<ICollideable> collideables, int layer)
         {
-            return collideables.FirstOrDefault(x => x.IsAlive && View.Collider.Distance(x.Collider).isOverlapped);
+            return collideables.FirstOrDefault(
+                x => x.IsAlive
+                    && x.Collider.gameObject.layer == layer
+                    && View.Collider.Distance(x.Collider).isOverlapped);
         }
     }
 }

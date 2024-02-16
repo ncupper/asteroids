@@ -1,5 +1,7 @@
 using System;
 
+using Asteroids.Game;
+
 using UnityEngine;
 namespace Asteroids.GUI
 {
@@ -19,11 +21,11 @@ namespace Asteroids.GUI
 
         public event Action StartClicked;
 
-        public void Setup(Game.IObservableVariable<float> playerSpeed, Game.IObservableVariable<int> scores)
+        public void Setup(IObservableVariable<float> playerSpeed, IObservableVariable<int> scores, IObservableVariable<int> round)
         {
             _startGame = new StartGame(StartGame);
             _startGame.StartClicked += OnStartClicked;
-            _mainGame = new MainGame(MainGame, playerSpeed, scores);
+            _mainGame = new MainGame(MainGame, playerSpeed, scores, round);
         }
 
         private void OnStartClicked()

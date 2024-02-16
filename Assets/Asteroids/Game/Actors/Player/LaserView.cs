@@ -24,7 +24,7 @@ namespace Asteroids.Game
             return Collider.Distance(collideable.Collider).isOverlapped;
         }
 
-        public ICollideable GetTouch(IReadOnlyCollection<ICollideable> collideables)
+        public ICollideable GetTouch(IReadOnlyCollection<ICollideable> collideables, int layer)
         {
             return collideables.FirstOrDefault(x => Collider.Distance(x.Collider).isOverlapped);
         }

@@ -2,8 +2,9 @@
 
 namespace Asteroids.Game
 {
-    public class AsteroidSimulator
+    public class AsteroidSimulator : ISimulator
     {
+        private const int BulletsLayer = 6;
         private const int BigSize = 120;
 
         private readonly AsteroidSpawner _spawner;
@@ -32,7 +33,7 @@ namespace Asteroids.Game
             {
                 asteroid.Move(deltaTime);
 
-                ICollideable hitBullet = asteroid.GetTouch(bullets);
+                ICollideable hitBullet = asteroid.GetTouch(bullets, BulletsLayer);
                 if (hitBullet != null)
                 {
                     hitBullet.Collide();
