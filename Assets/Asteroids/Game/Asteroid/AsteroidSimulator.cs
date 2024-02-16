@@ -16,6 +16,11 @@ namespace Asteroids.Game
 
         public IReadOnlyList<ICollideable> ActiveAsteroids => _spawner.ActiveAsteroids;
 
+        public void HideAll()
+        {
+            _spawner.HideAll();
+        }
+
         public void StartupSpawn(int count)
         {
             _spawner.StartupSpawn(count);

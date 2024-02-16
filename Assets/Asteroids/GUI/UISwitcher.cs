@@ -1,3 +1,5 @@
+using System;
+
 using UnityEngine;
 namespace Asteroids.GUI
 {
@@ -15,14 +17,25 @@ namespace Asteroids.GUI
         private StartGame _startGame;
         private MainGame _mainGame;
 
+        public event Action StartClicked;
+
         public void Setup(Game.IObservableVariable<float> playerSpeed, Game.IObservableVariable<int> scores)
         {
             _startGame = new StartGame(StartGame);
+            _startGame.StartClicked += OnStartClicked;
             _mainGame = new MainGame(MainGame, playerSpeed, scores);
+        }
+
+        private void OnStartClicked()
+        {
+            StartClicked?.Invoke();
         }
 
         private void OnDestroy()
         {
+            _startGame.StartClicked -= OnStartClicked;
+            _startGame?.Dispose();
+
             _mainGame?.Dispose();
         }
 

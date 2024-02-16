@@ -27,8 +27,6 @@ namespace Asteroids
                 Instantiate(_bulletPrefab),
                 Instantiate(_ufoPrefab),
                 _uiSwitcher);
-
-            _game.StartRound();
         }
 
         private void Update()
@@ -39,6 +37,11 @@ namespace Asteroids
         private void FixedUpdate()
         {
             _game.Simulate(Time.fixedDeltaTime);
+        }
+
+        private void OnDestroy()
+        {
+            _game.Dispose();
         }
     }
 }

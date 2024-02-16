@@ -1,17 +1,25 @@
+using System;
+using System.Threading.Tasks;
+
 using Asteroids.GUI;
 using Asteroids.Inputs;
+
+using UnityEditor;
+
+using UnityEngine;
 namespace Asteroids.Game
 {
-    public class Game
+    public class Game : IDisposable
     {
         private readonly UISwitcher _uiSwitcher;
-        private readonly AsteroidSimulator _asteroidSimulator;
+        private readonly AsteroidSimulator _asteroids;
         private readonly BulletSimulator _bullets;
         private Ufo _ufo;
         private readonly Player _player;
         private readonly GameInput _gameInput;
 
-        private IObservableVariable<int> _scores;
+        private readonly IObservableVariable<int> _scores;
+        private bool _isPaused;
 
         public Game(SpaceField field,
             PlayerView playerView, AsteroidView asteroidView, BulletView bulletView, UfoView ufoView,
@@ -25,26 +33,19 @@ namespace Asteroids.Game
             _scores = new ObservableVariable<int>();
 
             _player = new Player(playerView, field);
-            _asteroidSimulator = new AsteroidSimulator(field, asteroidView);
+            _asteroids = new AsteroidSimulator(field, asteroidView);
             _bullets = new BulletSimulator(field, bulletView, playerView.BulletPivot);
             _ufo = new Ufo(ufoView, field, playerView.transform);
 
             _uiSwitcher.Setup(_player.VelocityValue, _scores);
+            _uiSwitcher.StartClicked += StartGame;
 
-            _uiSwitcher.SwitchTo(UIMode.StartGame);
-            _gameInput.Gameplay.Enable();
-            _gameInput.UI.Disable();
+            Pause();
         }
 
-        public void StartRound(int round = 0)
+        public void Dispose()
         {
-            _uiSwitcher.SwitchTo(UIMode.MainGame);
-
-            _player.Spawn();
-
-            _bullets.HideAll();
-
-            _asteroidSimulator.StartupSpawn(round + 6);
+            _uiSwitcher.StartClicked -= StartGame;
         }
 
         public void UpdateInput(float deltaTime)
@@ -54,32 +55,78 @@ namespace Asteroids.Game
 
         public void Simulate(float deltaTime)
         {
-            _player.Move(deltaTime);
-
-            _bullets.Simulate(deltaTime);
-            _asteroidSimulator.Simulate(deltaTime, _bullets.ActiveBullets);
-
-            if (_ufo.IsAlive)
+            if (!_isPaused)
             {
-                _ufo.Move(deltaTime);
-                ICollideable hitBullet = _ufo.GetTouch(_bullets.ActiveBullets);
-                if (hitBullet != null)
+                _player.Move(deltaTime);
+
+                _bullets.Simulate(deltaTime);
+                _asteroids.Simulate(deltaTime, _bullets.ActiveBullets);
+
+                ICollideable hit = _player.GetTouch(_asteroids.ActiveAsteroids);
+                if (hit != null)
                 {
-                    hitBullet.Collide();
-                    _ufo.Destroy();
+                    ColliderDistance2D dist = _player.Collider.Distance(hit.Collider);
+                    GameOver();
                 }
-            }
-
-            if (_player.GetTouch(_asteroidSimulator.ActiveAsteroids) != null
-                || (_ufo.IsAlive && _player.IsTouchWith(_ufo)))
-            {
-                GameOver();
+                else if (_ufo.IsAlive)
+                {
+                    _ufo.Move(deltaTime);
+                    ICollideable hitBullet = _ufo.GetTouch(_bullets.ActiveBullets);
+                    if (hitBullet != null)
+                    {
+                        hitBullet.Collide();
+                        _ufo.Destroy();
+                    }
+                    else if (_player.IsTouchWith(_ufo))
+                    {
+                        GameOver();
+                    }
+                }
             }
         }
 
         private void GameOver()
         {
             _player.Destroy();
+            Pause();
+        }
+
+        private void Pause()
+        {
+            _isPaused = true;
+
+            _player.Destroy();
+            _bullets.HideAll();
+            _asteroids.HideAll();
+            _ufo.Destroy();
+
+            _uiSwitcher.SwitchTo(UIMode.StartGame);
+            _gameInput.Gameplay.Disable();
+            _gameInput.UI.Enable();
+        }
+
+        private async void StartGame()
+        {
+            _uiSwitcher.SwitchTo(UIMode.MainGame);
+            _gameInput.Gameplay.Enable();
+            _gameInput.UI.Disable();
+
+            StartRound();
+
+            await Task.Delay(100);
+
+            _isPaused = false;
+        }
+
+        private void StartRound(int round = 0)
+        {
+            _player.Spawn();
+
+            _bullets.HideAll();
+
+            _asteroids.StartupSpawn(round + 6);
+
+            _ufo.Spawn();
         }
     }
 }

@@ -6,9 +6,9 @@ namespace Asteroids.Game
     public class AsteroidSpawner
     {
         private const int BigSize = 120;
-        private const int BigSpeed = 10;
+        private const int BigSpeed = 5;
         private const int SmallSize = 50;
-        private const int SmallSpeed = 20;
+        private const int SmallSpeed = 10;
         private const int Pieces = 5;
 
         private readonly ViewsPool<AsteroidView> _viewsPool;
@@ -21,6 +21,11 @@ namespace Asteroids.Game
 
             _viewsPool = new ViewsPool<AsteroidView>(asteroidSample, 10);
             _asteroids = new ItemsContainer<Asteroid>();
+        }
+
+        public void HideAll()
+        {
+            _asteroids.ClearAll();
         }
 
         public IReadOnlyList<Asteroid> ActiveAsteroids => _asteroids.GetItems();

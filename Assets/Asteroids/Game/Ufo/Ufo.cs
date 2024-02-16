@@ -10,13 +10,20 @@ namespace Asteroids.Game
     {
         private const float UfoSpeed = 10.0f;
 
+        private readonly SpaceField _field;
         private readonly Transform _target;
 
         public Ufo(UfoView view, SpaceField field, Transform target)
             : base(view)
         {
+            _field = field;
             _target = target;
-            View.Self.position = field.GetRandomPositionForPerimeterArea();
+        }
+
+        public void Spawn()
+        {
+            View.gameObject.SetActive(true);
+            View.Self.position = _field.GetRandomPositionForPerimeterArea();
         }
 
         public override void Move(float deltaTime)
