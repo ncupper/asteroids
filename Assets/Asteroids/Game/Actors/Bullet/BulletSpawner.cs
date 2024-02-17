@@ -1,3 +1,5 @@
+using Asteroids.Game.Actors;
+
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -9,33 +11,30 @@ namespace Asteroids.Game
         private const float BulletSpawnDelaySeconds = 0.15f;
 
         private readonly ViewsPool<BulletView> _viewsPool;
-        private readonly ItemsContainer<Bullet> _bullets;
         private readonly SpaceField _field;
         private readonly Transform _spawnPivot;
+        private readonly ItemsContainer<Actor> _container;
+        private readonly Dictionary<BulletView, Bullet> _bullets;
 
         private float _spawnTimer;
 
-        public BulletSpawner(SpaceField field, BulletView bulletSample, Transform spawnPivot)
+        public BulletSpawner(SpaceField field, BulletView bulletSample, Transform spawnPivot, ItemsContainer<Actor> container)
         {
             _field = field;
             _spawnPivot = spawnPivot;
+            _container = container;
             _viewsPool = new ViewsPool<BulletView>(bulletSample, 10);
-            _bullets = new ItemsContainer<Bullet>();
+            _bullets = new Dictionary<BulletView, Bullet>();
         }
-
-        public IReadOnlyList<ICollideable> BulletColliders => _bullets.GetItems();
-        public IReadOnlyList<IMovable> BulletMovers => _bullets.GetItems();
 
         public void HideAll()
         {
-            _bullets.ClearAll();
+            _viewsPool.HideAll();
         }
 
         public void DestroyOutOfFieldBullets()
         {
-            IReadOnlyList<Bullet> items = _bullets.GetItems();
-
-            foreach (Bullet bullet in items)
+            foreach (Bullet bullet in _bullets.Values)
             {
                 if (_field.IsOut(bullet.Positon))
                 {
@@ -61,8 +60,12 @@ namespace Asteroids.Game
             view.gameObject.SetActive(true);
 
             Vector3 velocity = _spawnPivot.up * BulletSpeed;
-            var bullet = new Bullet(view, velocity);
-            _bullets.Add(bullet);
+            if (!_bullets.TryGetValue(view, out Bullet bullet))
+            {
+                bullet = new Bullet(view, velocity);
+                _bullets.Add(view, bullet);
+            }
+            _container.Add(bullet);
         }
 
     }

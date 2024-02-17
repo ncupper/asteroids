@@ -6,7 +6,7 @@ using Asteroids.Game.Actors;
 using UnityEngine;
 namespace Asteroids.Game
 {
-    public class Ufo : Actor<UfoView>
+    public class Ufo : Actor
     {
         private const float UfoSpeed = 5.0f;
 

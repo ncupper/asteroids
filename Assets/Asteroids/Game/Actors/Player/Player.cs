@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 using Asteroids.Game.Actors;
 using Asteroids.Inputs;
 
 using UnityEngine;
 namespace Asteroids.Game
 {
-    public class Player : Actor<PlayerView>
+    public class Player : Actor
     {
         private const float Braking = 20;
         private const float Acceleration = 20;
@@ -31,7 +27,7 @@ namespace Asteroids.Game
         public void Spawn()
         {
             View.gameObject.SetActive(true);
-            View.Laser.gameObject.SetActive(false);
+            ((PlayerView)View).Laser.gameObject.SetActive(false);
             View.Self.position = Vector3.zero;
         }
 

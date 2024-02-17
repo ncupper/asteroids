@@ -5,11 +5,11 @@ using System.Linq;
 using UnityEngine;
 namespace Asteroids.Game.Actors
 {
-    public abstract class Actor<TView> : IMovable, ICollideable, IDestroyable where TView : MovableView
+    public abstract class Actor : IMovable, ICollideable, IDestroyable
     {
-        protected readonly TView View;
+        protected readonly MovableView View;
 
-        protected Actor(TView view)
+        protected Actor(MovableView view)
         {
             View = view;
         }

@@ -3,7 +3,7 @@ using Asteroids.Game.Actors;
 using UnityEngine;
 namespace Asteroids.Game
 {
-    public class Bullet : Actor<BulletView>
+    public class Bullet : Actor
     {
         private readonly Vector3 _velocity;
 

@@ -1300,7 +1300,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerPrefab: {fileID: 6433687966611212254, guid: d267e303c6421424394115808da07115, type: 3}
-  _asteroidPrefab: {fileID: 2999048029870479542, guid: 6bc05523208cc1f4f9801e27c1b74a7a, type: 3}
+  _asteroidBigPrefab: {fileID: 2999048029870479542, guid: 6bc05523208cc1f4f9801e27c1b74a7a, type: 3}
+  _asteroidSmallPrefab: {fileID: 2999048029870479542, guid: 588fe419fbdab9840af56e370e4e8a0d, type: 3}
   _bulletPrefab: {fileID: -1455403016238192876, guid: d05a4bbf1b7b2ba44ad9e81a5d885838, type: 3}
   _ufoPrefab: {fileID: 7987861577018754172, guid: e9e24c67d325cf344b3f21bffc054f28, type: 3}
   _uiSwitcher: {fileID: 133717738}

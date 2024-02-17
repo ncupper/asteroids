@@ -10,7 +10,8 @@ namespace Asteroids
     public class GameContext : MonoBehaviour
     {
         [SerializeField] private PlayerView _playerPrefab;
-        [SerializeField] private AsteroidView _asteroidPrefab;
+        [SerializeField] private AsteroidView _asteroidBigPrefab;
+        [SerializeField] private AsteroidView _asteroidSmallPrefab;
         [SerializeField] private BulletView _bulletPrefab;
         [SerializeField] private UfoView _ufoPrefab;
         [Header("GUI")]
@@ -20,13 +21,13 @@ namespace Asteroids
 
         private void Awake()
         {
-            _game = new Game.Game(
-                new SpaceField(Camera.main),
-                Instantiate(_playerPrefab),
-                Instantiate(_asteroidPrefab),
-                Instantiate(_bulletPrefab),
-                Instantiate(_ufoPrefab),
-                _uiSwitcher);
+            PlayerView playerView = Instantiate(_playerPrefab);
+            _game = new Game.Game(new SpaceField(Camera.main), playerView, _uiSwitcher)
+                   .SetupAsteroids(Instantiate(_asteroidBigPrefab), _asteroidSmallPrefab)
+                   .SetupBullets(Instantiate(_bulletPrefab), playerView.BulletPivot)
+                   .SetupUfo(Instantiate(_ufoPrefab), playerView.transform);
+
+            _game.Pause();
         }
 
         private void Update()

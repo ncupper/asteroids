@@ -1,3 +1,5 @@
+using Asteroids.Game.Actors;
+
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -7,12 +9,10 @@ namespace Asteroids.Game
     {
         private readonly BulletSpawner _spawner;
 
-        public BulletSimulator(SpaceField field, BulletView bulletSample, Transform spawnPivot)
+        public BulletSimulator(SpaceField field, BulletView bulletSample, Transform spawnPivot, ItemsContainer<Actor> container)
         {
-            _spawner = new BulletSpawner(field, bulletSample, spawnPivot);
+            _spawner = new BulletSpawner(field, bulletSample, spawnPivot, container);
         }
-
-        public IReadOnlyList<ICollideable> ActiveBullets => _spawner.BulletColliders;
 
         public void HideAll()
         {
@@ -21,15 +21,7 @@ namespace Asteroids.Game
 
         public void Simulate(float deltaTime, IReadOnlyList<ICollideable> collideables)
         {
-            IReadOnlyList<IMovable> items = _spawner.BulletMovers;
-
-            foreach (IMovable bullet in items)
-            {
-                bullet.Move(deltaTime);
-            }
-
             _spawner.DestroyOutOfFieldBullets();
-
             _spawner.IncSpawnTimer(deltaTime);
         }
 

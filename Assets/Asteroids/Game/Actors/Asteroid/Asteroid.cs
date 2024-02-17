@@ -1,25 +1,19 @@
-using System.Collections.Generic;
-using System.Linq;
-
 using Asteroids.Game.Actors;
 
 using UnityEngine;
 namespace Asteroids.Game
 {
-    public class Asteroid : Actor<AsteroidView>
+    public class Asteroid : Actor
     {
         private readonly SpaceField _field;
         private readonly Vector3 _velocity;
 
-        public Asteroid(AsteroidView view, int size, SpaceField field, Vector3 velocity)
+        public Asteroid(AsteroidView view, SpaceField field, Vector3 velocity)
             : base(view)
         {
-            Size = size;
             _field = field;
             _velocity = velocity;
         }
-
-        public int Size { get; }
 
         public override void Move(float deltaTime)
         {
