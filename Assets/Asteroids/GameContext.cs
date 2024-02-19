@@ -2,6 +2,8 @@ using Asteroids.Game;
 
 using System;
 
+using Asteroids.Game.Actors.Asteroid;
+using Asteroids.Game.Actors.Bullet;
 using Asteroids.GUI;
 
 using UnityEngine;

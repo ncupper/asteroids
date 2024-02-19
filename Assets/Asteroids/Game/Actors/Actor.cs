@@ -20,8 +20,11 @@ namespace Asteroids.Game.Actors
 
         public void Destroy()
         {
-            View.gameObject.SetActive(false);
-            Destroyed?.Invoke(this);
+            if (IsAlive)
+            {
+                View.gameObject.SetActive(false);
+                Destroyed?.Invoke(this);
+            }
         }
 
         public Vector3 Positon => View.Self.position;
@@ -29,15 +32,11 @@ namespace Asteroids.Game.Actors
         public abstract void Move(float deltaTime);
 
         public Collider2D Collider => View.Collider;
+        public int Layer => View.gameObject.layer;
 
         public void Collide()
         {
             Destroy();
-        }
-
-        public bool IsTouchWith(ICollideable collideable)
-        {
-            return View.Collider.Distance(collideable.Collider).isOverlapped;
         }
 
         public ICollideable GetTouch(IReadOnlyCollection<ICollideable> collideables, int layer)
@@ -46,6 +45,11 @@ namespace Asteroids.Game.Actors
                 x => x.IsAlive
                     && x.Collider.gameObject.layer == layer
                     && View.Collider.Distance(x.Collider).isOverlapped);
+        }
+
+        public virtual void Spawn()
+        {
+            View.gameObject.SetActive(true);
         }
     }
 }

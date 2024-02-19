@@ -8,6 +8,9 @@ using Asteroids.Inputs;
 
 using System.Collections.Generic;
 
+using Asteroids.Game.Actors.Asteroid;
+using Asteroids.Game.Actors.Bullet;
+
 using UnityEngine;
 namespace Asteroids.Game
 {
@@ -27,6 +30,9 @@ namespace Asteroids.Game
         private readonly Player _player;
         private readonly GameInput _gameInput;
 
+        private readonly int _playerLayer;
+        private int _obstacleLayer;
+
         private readonly IObservableVariable<int> _scores;
         private readonly IObservableVariable<int> _round;
         private bool _isPaused;
@@ -45,7 +51,8 @@ namespace Asteroids.Game
             _round = new ObservableVariable<int>();
 
             _player = new Player(playerView, field);
-            _activeActors.Add(_player);
+            _player.Destroyed += OnPlayerDestroyed;
+            _playerLayer = _player.Layer;
 
             _uiSwitcher.Setup(_player.VelocityValue, _scores, _round);
             _uiSwitcher.StartClicked += StartGame;
@@ -53,6 +60,7 @@ namespace Asteroids.Game
 
         public Game SetupAsteroids(AsteroidView asteroidBigView, AsteroidView asteroidSmallView)
         {
+            _obstacleLayer = asteroidBigView.gameObject.layer;
             _asteroids = new AsteroidSimulator(_field, asteroidBigView, asteroidSmallView, _activeActors);
             return this;
         }
@@ -66,7 +74,7 @@ namespace Asteroids.Game
         public Game SetupUfo(UfoView ufoView, Transform target)
         {
             _ufo = new Ufo(ufoView, _field, target);
-            _activeActors.Add(_ufo);
+            _obstacleLayer = _ufo.Layer;
             return this;
         }
 
@@ -77,7 +85,7 @@ namespace Asteroids.Game
 
         public void UpdateInput(float deltaTime)
         {
-            _player.UpdateInput(_gameInput, deltaTime);
+            _player.UpdateInput(_gameInput, deltaTime, _activeActors);
         }
 
         public void Simulate(float deltaTime)
@@ -90,33 +98,33 @@ namespace Asteroids.Game
                     actor.Move(deltaTime);
                 }
 
-                _bullets.Simulate(deltaTime, null);
-                _asteroids.Simulate(deltaTime, actors);
+                _bullets.Simulate(deltaTime);
 
-                ICollideable hit = _player.GetTouch(actors, 7);
-                if (hit != null)
+                var haveObstacles = false;
+                foreach (ICollideable actor in actors)
                 {
-                    GameOver();
-                }
-                else if (_ufo.IsAlive)
-                {
-                    ICollideable hitBullet = _ufo.GetTouch(actors, 6);
-                    if (hitBullet != null)
+                    int contrLayer = actor.Layer == _playerLayer
+                        ? _obstacleLayer
+                        : _playerLayer;
+
+                    ICollideable hit = actor.GetTouch(actors, contrLayer);
+                    if (hit != null)
                     {
-                        hitBullet.Collide();
-                        _ufo.Destroy();
+                        actor.Collide();
+                        hit.Collide();
                     }
+                    haveObstacles = haveObstacles || actor.Layer == _obstacleLayer;
                 }
-                /*else if (_asteroids.ActiveAsteroids.Count == 0)
+
+                if (_player.IsAlive && !haveObstacles)
                 {
                     StartRound(_round.Value + 1);
-                }*/
+                }
             }
         }
 
-        private void GameOver()
+        private void OnPlayerDestroyed(IDestroyable _)
         {
-            _player.Destroy();
             Pause();
         }
 
@@ -150,6 +158,7 @@ namespace Asteroids.Game
             _round.Value = round;
 
             _player.Spawn();
+            _activeActors.Add(_player);
 
             _bullets.HideAll();
             _asteroids.HideAll();
@@ -157,9 +166,10 @@ namespace Asteroids.Game
             _asteroids.Spawn(round + 5);
 
             _ufo.Spawn();
+            _activeActors.Add(_ufo);
 
-            _isPaused = true;
             //wait start round animation
+            _isPaused = true;
             await Task.Delay(StartRoundDelay);
             _isPaused = false;
         }

@@ -9,8 +9,10 @@ namespace Asteroids.Game
         private const float Braking = 20;
         private const float Acceleration = 20;
         private const float MaxVelocity = 20;
+        private const int MaxLaserCharges = 3;
 
         private readonly IField _field;
+        private readonly Laser _laser;
 
         private Vector3 _velocity;
         private Vector3 _accelerate;
@@ -18,20 +20,23 @@ namespace Asteroids.Game
         public Player(PlayerView view, IField field) : base(view)
         {
             _field = field;
-
+            _laser = new Laser(view.Laser);
             VelocityValue = new ObservableVariable<float>();
         }
 
-        public ObservableVariable<float> VelocityValue { get; private set; }
+        public ObservableVariable<float> VelocityValue { get; }
+        public ObservableVariable<float> LaserChargeTimer => _laser.ChargeTimer;
+        public ObservableVariable<int> LaserChargesCount => _laser.ChargesCount;
 
-        public void Spawn()
+        public override void Spawn()
         {
-            View.gameObject.SetActive(true);
-            ((PlayerView)View).Laser.gameObject.SetActive(false);
+            base.Spawn();
             View.Self.position = Vector3.zero;
+            LaserChargesCount.Value = MaxLaserCharges;
+            LaserChargeTimer.Value = 0;
         }
 
-        public void UpdateInput(GameInput gameInput, float deltaTime)
+        public void UpdateInput(GameInput gameInput, float deltaTime, ActiveActorsContainer container)
         {
             if (gameInput.Gameplay.Rotate.IsInProgress())
             {
@@ -57,6 +62,8 @@ namespace Asteroids.Game
                     _velocity = Vector3.zero;
                 }
             }
+
+            _laser.UpdateInput(gameInput, deltaTime, container);
 
             float velVal = _velocity.magnitude;
             velVal = Mathf.Clamp(velVal, 0, MaxVelocity);

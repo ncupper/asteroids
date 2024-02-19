@@ -1,10 +1,6 @@
-﻿using System.Collections.Generic;
-
-using Asteroids.Game.Actors;
-
-namespace Asteroids.Game
+﻿namespace Asteroids.Game.Actors.Asteroid
 {
-    public class AsteroidSimulator : ISimulator
+    public class AsteroidSimulator
     {
         private const int Pieces = 5;
 
@@ -32,10 +28,6 @@ namespace Asteroids.Game
         public void Spawn(int count)
         {
             _bigSpawner.Spawn(count);
-        }
-
-        public void Simulate(float deltaTime, IReadOnlyList<ICollideable> collideables)
-        {
         }
 
         private void OnBigAsteroidDestroyed(Asteroid asteroid)

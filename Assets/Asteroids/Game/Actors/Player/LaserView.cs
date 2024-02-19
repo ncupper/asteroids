@@ -5,15 +5,10 @@ using UnityEngine;
 namespace Asteroids.Game
 {
     [RequireComponent(typeof(Collider2D))]
-    public class LaserView : MonoBehaviour, ICollideable
+    public class LaserView : MovableView
     {
-        private void Awake()
-        {
-            Collider = GetComponent<Collider2D>();
-        }
-
         public bool IsAlive => gameObject.activeSelf;
-        public Collider2D Collider { get; private set; }
+        public int Layer => gameObject.layer;
 
         public void Collide()
         {

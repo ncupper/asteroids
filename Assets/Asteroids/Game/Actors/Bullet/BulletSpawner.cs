@@ -1,13 +1,10 @@
 using System;
-
-using Asteroids.Game.Actors;
-
 using System.Collections.Generic;
 
 using UnityEngine;
-namespace Asteroids.Game
+namespace Asteroids.Game.Actors.Bullet
 {
-    public class BulletSpawner : IActorSpawner
+    public class BulletSpawner
     {
         private const float BulletSpeed = 30.0f;
         private const float BulletSpawnDelaySeconds = 0.15f;
@@ -48,7 +45,6 @@ namespace Asteroids.Game
         {
             BulletView view = _viewsPool.Get();
             view.Self.position = _spawnPivot.position;
-            view.gameObject.SetActive(true);
 
             Vector3 velocity = _spawnPivot.up * BulletSpeed;
             if (!_bullets.TryGetValue(view, out Bullet bullet))
@@ -58,6 +54,7 @@ namespace Asteroids.Game
             }
 
             bullet.Velocity = velocity;
+            bullet.Spawn();
             Spawned?.Invoke(bullet);
         }
 

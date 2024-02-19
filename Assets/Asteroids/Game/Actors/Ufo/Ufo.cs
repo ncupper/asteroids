@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-
 using Asteroids.Game.Actors;
 
 using UnityEngine;
@@ -20,9 +17,9 @@ namespace Asteroids.Game
             _target = target;
         }
 
-        public void Spawn()
+        public override void Spawn()
         {
-            View.gameObject.SetActive(true);
+            base.Spawn();
             View.Self.position = _field.GetRandomPositionForPerimeterArea();
         }
 
@@ -34,16 +31,6 @@ namespace Asteroids.Game
 
             View.Self.localEulerAngles += new Vector3(0, 0, angles.z);
             View.Self.position = position + deltaTime * UfoSpeed * View.Self.up;
-        }
-
-        public bool IsAnyTouch(IReadOnlyList<ICollideable> bullets)
-        {
-            ICollideable hit = bullets.FirstOrDefault(x => View.Collider.Distance(x.Collider).isOverlapped);
-            if (hit != null)
-            {
-                hit.Collide();
-            }
-            return hit != null;
         }
     }
 }

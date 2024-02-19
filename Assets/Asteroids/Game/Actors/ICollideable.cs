@@ -8,10 +8,10 @@ namespace Asteroids.Game
         public bool IsAlive { get; }
 
         Collider2D Collider { get; }
+        int Layer { get; }
 
         void Collide();
 
-        bool IsTouchWith(ICollideable collideable);
         ICollideable GetTouch(IReadOnlyCollection<ICollideable> collideables, int layer);
     }
 }

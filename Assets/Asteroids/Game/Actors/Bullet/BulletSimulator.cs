@@ -1,11 +1,9 @@
 using System.Collections.Generic;
 
-using Asteroids.Game.Actors;
-
 using UnityEngine;
-namespace Asteroids.Game
+namespace Asteroids.Game.Actors.Bullet
 {
-    public class BulletSimulator : ISimulator
+    public class BulletSimulator
     {
         private readonly BulletSpawner _spawner;
 
@@ -20,7 +18,7 @@ namespace Asteroids.Game
             _spawner.HideAll();
         }
 
-        public void Simulate(float deltaTime, IReadOnlyList<ICollideable> collideables)
+        public void Simulate(float deltaTime)
         {
             _spawner.IncSpawnTimer(deltaTime);
         }

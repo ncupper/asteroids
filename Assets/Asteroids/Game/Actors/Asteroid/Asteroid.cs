@@ -1,7 +1,5 @@
-using Asteroids.Game.Actors;
-
 using UnityEngine;
-namespace Asteroids.Game
+namespace Asteroids.Game.Actors.Asteroid
 {
     public class Asteroid : Actor
     {

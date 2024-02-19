@@ -1,16 +1,13 @@
 using System;
-
 using System.Collections.Generic;
-
-using Asteroids.Game.Actors;
 
 using UnityEngine;
 
 using Random = UnityEngine.Random;
 
-namespace Asteroids.Game
+namespace Asteroids.Game.Actors.Asteroid
 {
-    public class AsteroidSpawner : IActorSpawner
+    public class AsteroidSpawner
     {
         private const int BigSpeed = 5;
         private const int SmallSpeed = 10;
@@ -68,6 +65,7 @@ namespace Asteroids.Game
             }
 
             asteroid.Velocity = velocity;
+            asteroid.Spawn();
             Spawned?.Invoke(asteroid);
         }
 
