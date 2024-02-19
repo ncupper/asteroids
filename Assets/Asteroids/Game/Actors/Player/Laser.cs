@@ -25,6 +25,31 @@ namespace Asteroids.Game
 
         public void UpdateInput(GameInput gameInput, float deltaTime, ActiveActorsContainer container)
         {
+            UpdateRestoreTimer(deltaTime);
+
+            if (IsAlive)
+            {
+                _activeTimer += deltaTime;
+                if (_activeTimer.CompareTo(LaserActiveTimer) >= 0)
+                {
+                    Destroy();
+                }
+            }
+            else if (gameInput.Gameplay.LaserFire.WasPerformedThisFrame() && ChargesCount.Value > 0)
+            {
+                ChargesCount.Value -= 1;
+                if (ChargeTimer.Value.Equals(0))
+                {
+                    ChargeTimer.Value = LaserChargeTimer;
+                }
+                _activeTimer = 0;
+                Spawn();
+                container.Add(this);
+            }
+        }
+
+        private void UpdateRestoreTimer(float deltaTime)
+        {
             if (!ChargeTimer.Value.Equals(0))
             {
                 ChargeTimer.Value -= deltaTime;
@@ -41,30 +66,6 @@ namespace Asteroids.Game
                     }
                 }
             }
-
-            if (gameInput.Gameplay.LaserFire.IsPressed() && ChargesCount.Value > 0)
-            {
-                if (!IsAlive)
-                {
-                    ChargesCount.Value -= 1;
-                    if (ChargeTimer.Value.Equals(0))
-                    {
-                        ChargeTimer.Value = LaserChargeTimer;
-                    }
-                    _activeTimer = 0;
-                    Spawn();
-                    container.Add(this);
-                }
-            }
-            else if (IsAlive)
-            {
-                _activeTimer += deltaTime;
-                if (_activeTimer.CompareTo(LaserActiveTimer) >= 0)
-                {
-                    Destroy();
-                }
-            }
-
         }
     }
 }

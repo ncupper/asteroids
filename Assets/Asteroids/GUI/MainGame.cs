@@ -8,19 +8,25 @@ namespace Asteroids.GUI
     {
         private readonly MainGameView _view;
         private readonly IObservableVariable<float> _playerSpeed;
-        private readonly IObservableVariable<int> _scores;
+        private readonly IObservableVariable<int> _laserCharges;
+        private readonly IObservableVariable<float> _laserTimer;
         private readonly IObservableVariable<int> _round;
 
         public MainGame(MainGameView view,
-            IObservableVariable<float> playerSpeed, IObservableVariable<int> scores, IObservableVariable<int> round)
+            IObservableVariable<float> playerSpeed,
+            IObservableVariable<int> laserCharges, IObservableVariable<float> laserTimer,
+            IObservableVariable<int> round)
         {
             _view = view;
 
             _playerSpeed = playerSpeed;
             _playerSpeed.Changed += OnPlayerSpeedChanged;
 
-            _scores = scores;
-            _scores.Changed += OnScoresChanged;
+            _laserCharges = laserCharges;
+            _laserCharges.Changed += OnLaserChargesChanged;
+
+            _laserTimer = laserTimer;
+            _laserTimer.Changed += OnLaserTimerChanged;
 
             _round = round;
             _round.Changed += OnRoundChanged;
@@ -29,7 +35,10 @@ namespace Asteroids.GUI
         public void Dispose()
         {
             _playerSpeed.Changed -= OnPlayerSpeedChanged;
-            _scores.Changed -= OnScoresChanged;
+
+            _laserCharges.Changed -= OnLaserChargesChanged;
+            _laserTimer.Changed -= OnLaserTimerChanged;
+
             _round.Changed -= OnRoundChanged;
         }
 
@@ -38,9 +47,15 @@ namespace Asteroids.GUI
             _view.PlayerVelocity.text = value.ToString("0.0");
         }
 
-        private void OnScoresChanged(int value)
+        private void OnLaserChargesChanged(int value)
         {
-            _view.Scores.text = value.ToString();
+            _view.LaserCharges.text = value.ToString();
+        }
+
+        private void OnLaserTimerChanged(float value)
+        {
+            _view.LaserRestoreTimer.gameObject.SetActive(!value.Equals(0));
+            _view.LaserRestoreTimer.text = "(" + value.ToString("0.0") + ")";
         }
 
         private void OnRoundChanged(int value)

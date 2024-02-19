@@ -21,11 +21,13 @@ namespace Asteroids.GUI
 
         public event Action StartClicked;
 
-        public void Setup(IObservableVariable<float> playerSpeed, IObservableVariable<int> scores, IObservableVariable<int> round)
+        public void Setup(IObservableVariable<float> playerSpeed,
+            IObservableVariable<int> laserCharges, IObservableVariable<float> laserTimer,
+            IObservableVariable<int> round)
         {
             _startGame = new StartGame(StartGame);
             _startGame.StartClicked += OnStartClicked;
-            _mainGame = new MainGame(MainGame, playerSpeed, scores, round);
+            _mainGame = new MainGame(MainGame, playerSpeed, laserCharges, laserTimer, round);
         }
 
         private void OnStartClicked()

@@ -16,7 +16,7 @@ namespace Asteroids.Game
 {
     public class Game : IDisposable
     {
-        private const int StartRoundDelay = 900;
+        private const int StartRoundDelay = 800;
 
         private readonly ActiveActorsContainer _activeActors;
 
@@ -33,7 +33,6 @@ namespace Asteroids.Game
         private readonly int _playerLayer;
         private int _obstacleLayer;
 
-        private readonly IObservableVariable<int> _scores;
         private readonly IObservableVariable<int> _round;
         private bool _isPaused;
 
@@ -47,14 +46,13 @@ namespace Asteroids.Game
             _gameInput = new GameInput();
             _gameInput.Enable();
 
-            _scores = new ObservableVariable<int>();
             _round = new ObservableVariable<int>();
 
             _player = new Player(playerView, field);
             _player.Destroyed += OnPlayerDestroyed;
             _playerLayer = _player.Layer;
 
-            _uiSwitcher.Setup(_player.VelocityValue, _scores, _round);
+            _uiSwitcher.Setup(_player.VelocityValue, _player.LaserChargesCount, _player.LaserChargeTimer, _round);
             _uiSwitcher.StartClicked += StartGame;
         }
 
