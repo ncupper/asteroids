@@ -5,19 +5,19 @@ namespace Asteroids.Game
 {
     public class Asteroid : Actor
     {
-        private readonly SpaceField _field;
-        private readonly Vector3 _velocity;
+        private readonly IField _field;
 
-        public Asteroid(AsteroidView view, SpaceField field, Vector3 velocity)
+        public Asteroid(AsteroidView view, IField field)
             : base(view)
         {
             _field = field;
-            _velocity = velocity;
         }
+
+        public Vector3 Velocity { get; set; }
 
         public override void Move(float deltaTime)
         {
-            Vector3 pos = View.Self.position + deltaTime * _velocity;
+            Vector3 pos = View.Self.position + deltaTime * Velocity;
             pos = _field.CorrectPosition(pos);
             View.Self.position = pos;
         }

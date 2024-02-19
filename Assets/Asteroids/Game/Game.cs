@@ -15,15 +15,15 @@ namespace Asteroids.Game
     {
         private const int StartRoundDelay = 900;
 
-        private readonly ItemsContainer<Actor> _actors;
+        private readonly ActiveActorsContainer _activeActors;
 
-        private readonly SpaceField _field;
+        private readonly IField _field;
         private readonly UISwitcher _uiSwitcher;
-        
+
         private AsteroidSimulator _asteroids;
         private BulletSimulator _bullets;
         private Ufo _ufo;
-        
+
         private readonly Player _player;
         private readonly GameInput _gameInput;
 
@@ -31,12 +31,12 @@ namespace Asteroids.Game
         private readonly IObservableVariable<int> _round;
         private bool _isPaused;
 
-        public Game(SpaceField field, PlayerView playerView, UISwitcher uiSwitcher)
+        public Game(IField field, PlayerView playerView, UISwitcher uiSwitcher)
         {
             _field = field;
             _uiSwitcher = uiSwitcher;
 
-            _actors = new ItemsContainer<Actor>();
+            _activeActors = new ActiveActorsContainer();
 
             _gameInput = new GameInput();
             _gameInput.Enable();
@@ -45,7 +45,7 @@ namespace Asteroids.Game
             _round = new ObservableVariable<int>();
 
             _player = new Player(playerView, field);
-            _actors.Add(_player);
+            _activeActors.Add(_player);
 
             _uiSwitcher.Setup(_player.VelocityValue, _scores, _round);
             _uiSwitcher.StartClicked += StartGame;
@@ -53,20 +53,20 @@ namespace Asteroids.Game
 
         public Game SetupAsteroids(AsteroidView asteroidBigView, AsteroidView asteroidSmallView)
         {
-            _asteroids = new AsteroidSimulator(_field, asteroidBigView, asteroidSmallView, _actors);
+            _asteroids = new AsteroidSimulator(_field, asteroidBigView, asteroidSmallView, _activeActors);
             return this;
         }
 
         public Game SetupBullets(BulletView bulletView, Transform pivot)
         {
-            _bullets = new BulletSimulator(_field, bulletView, pivot, _actors);
+            _bullets = new BulletSimulator(_field, bulletView, pivot, _activeActors);
             return this;
         }
 
         public Game SetupUfo(UfoView ufoView, Transform target)
         {
             _ufo = new Ufo(ufoView, _field, target);
-            _actors.Add(_ufo);
+            _activeActors.Add(_ufo);
             return this;
         }
 
@@ -84,15 +84,15 @@ namespace Asteroids.Game
         {
             if (!_isPaused)
             {
-                IReadOnlyList<Actor> actors = _actors.GetItems();
+                IReadOnlyList<Actor> actors = _activeActors.GetItems();
                 foreach (IMovable actor in actors)
                 {
                     actor.Move(deltaTime);
                 }
-                
+
                 _bullets.Simulate(deltaTime, null);
                 _asteroids.Simulate(deltaTime, actors);
-                
+
                 ICollideable hit = _player.GetTouch(actors, 7);
                 if (hit != null)
                 {
@@ -145,7 +145,7 @@ namespace Asteroids.Game
 
         private async void StartRound(int round)
         {
-            _actors.ClearAll();
+            _activeActors.ClearAll();
 
             _round.Value = round;
 

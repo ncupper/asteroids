@@ -10,12 +10,12 @@ namespace Asteroids.Game
         private const float Acceleration = 20;
         private const float MaxVelocity = 20;
 
-        private readonly SpaceField _field;
+        private readonly IField _field;
 
         private Vector3 _velocity;
         private Vector3 _accelerate;
 
-        public Player(PlayerView view, SpaceField field) : base(view)
+        public Player(PlayerView view, IField field) : base(view)
         {
             _field = field;
 

@@ -5,17 +5,23 @@ namespace Asteroids.Game
 {
     public class Bullet : Actor
     {
-        private readonly Vector3 _velocity;
+        private readonly IField _field;
 
-        public Bullet(BulletView view, Vector3 velocity)
+        public Bullet(BulletView view, IField field)
             : base(view)
         {
-            _velocity = velocity;
+            _field = field;
         }
+
+        public Vector3 Velocity { get; set; }
 
         public override void Move(float deltaTime)
         {
-            View.Self.position += deltaTime * _velocity;
+            View.Self.position += deltaTime * Velocity;
+            if (_field.IsOut(Positon))
+            {
+                Destroy();
+            }
         }
 
     }

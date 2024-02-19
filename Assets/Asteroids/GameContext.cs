@@ -23,7 +23,7 @@ namespace Asteroids
         {
             PlayerView playerView = Instantiate(_playerPrefab);
             _game = new Game.Game(new SpaceField(Camera.main), playerView, _uiSwitcher)
-                   .SetupAsteroids(Instantiate(_asteroidBigPrefab), _asteroidSmallPrefab)
+                   .SetupAsteroids(Instantiate(_asteroidBigPrefab), Instantiate(_asteroidSmallPrefab))
                    .SetupBullets(Instantiate(_bulletPrefab), playerView.BulletPivot)
                    .SetupUfo(Instantiate(_ufoPrefab), playerView.transform);
 

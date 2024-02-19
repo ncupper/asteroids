@@ -10,10 +10,10 @@ namespace Asteroids.Game
     {
         private const float UfoSpeed = 5.0f;
 
-        private readonly SpaceField _field;
+        private readonly IField _field;
         private readonly Transform _target;
 
-        public Ufo(UfoView view, SpaceField field, Transform target)
+        public Ufo(UfoView view, IField field, Transform target)
             : base(view)
         {
             _field = field;

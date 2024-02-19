@@ -1,3 +1,5 @@
+using System;
+
 using Asteroids.Game.Actors;
 
 using System.Collections.Generic;
@@ -5,42 +7,31 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Asteroids.Game
 {
-    public class BulletSpawner
+    public class BulletSpawner : IActorSpawner
     {
         private const float BulletSpeed = 30.0f;
         private const float BulletSpawnDelaySeconds = 0.15f;
 
         private readonly ViewsPool<BulletView> _viewsPool;
-        private readonly SpaceField _field;
-        private readonly Transform _spawnPivot;
-        private readonly ItemsContainer<Actor> _container;
         private readonly Dictionary<BulletView, Bullet> _bullets;
+        private readonly IField _field;
+        private readonly Transform _spawnPivot;
 
         private float _spawnTimer;
 
-        public BulletSpawner(SpaceField field, BulletView bulletSample, Transform spawnPivot, ItemsContainer<Actor> container)
+        public BulletSpawner(IField field, BulletView bulletSample, Transform spawnPivot)
         {
             _field = field;
             _spawnPivot = spawnPivot;
-            _container = container;
             _viewsPool = new ViewsPool<BulletView>(bulletSample, 10);
             _bullets = new Dictionary<BulletView, Bullet>();
         }
 
+        public event Action<Actor> Spawned;
+
         public void HideAll()
         {
             _viewsPool.HideAll();
-        }
-
-        public void DestroyOutOfFieldBullets()
-        {
-            foreach (Bullet bullet in _bullets.Values)
-            {
-                if (_field.IsOut(bullet.Positon))
-                {
-                    bullet.Destroy();
-                }
-            }
         }
 
         public void IncSpawnTimer(float deltaTime)
@@ -62,10 +53,12 @@ namespace Asteroids.Game
             Vector3 velocity = _spawnPivot.up * BulletSpeed;
             if (!_bullets.TryGetValue(view, out Bullet bullet))
             {
-                bullet = new Bullet(view, velocity);
+                bullet = new Bullet(view, _field);
                 _bullets.Add(view, bullet);
             }
-            _container.Add(bullet);
+
+            bullet.Velocity = velocity;
+            Spawned?.Invoke(bullet);
         }
 
     }

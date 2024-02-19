@@ -1,31 +1,34 @@
-using Asteroids.Game.Actors;
+using System;
 
 using System.Collections.Generic;
 
+using Asteroids.Game.Actors;
+
 using UnityEngine;
+
+using Random = UnityEngine.Random;
 
 namespace Asteroids.Game
 {
-    public class AsteroidSpawner
+    public class AsteroidSpawner : IActorSpawner
     {
         private const int BigSpeed = 5;
         private const int SmallSpeed = 10;
 
         private readonly ViewsPool<AsteroidView> _viewsPool;
         private readonly Dictionary<AsteroidView, Asteroid> _asteroids;
-        private readonly SpaceField _field;
-        private readonly ItemsContainer<Actor> _container;
+        private readonly IField _field;
 
-        public AsteroidSpawner(SpaceField field, AsteroidView sample, ItemsContainer<Actor> container)
+        public AsteroidSpawner(IField field, AsteroidView sample)
         {
             _field = field;
-            _container = container;
 
             _viewsPool = new ViewsPool<AsteroidView>(sample, 10);
             _asteroids = new Dictionary<AsteroidView, Asteroid>();
         }
 
-        public IReadOnlyCollection<Asteroid> Asteroids => _asteroids.Values;
+        public event Action<Actor> Spawned;
+        public event Action<Asteroid> Destroyed;
 
         public void HideAll()
         {
@@ -54,19 +57,23 @@ namespace Asteroids.Game
         private void Spawn(Vector3 position, Vector3 velocity)
         {
             AsteroidView view = _viewsPool.Get();
-            view.gameObject.SetActive(true);
             view.Self.position = position;
+            view.gameObject.SetActive(true);
 
             if (!_asteroids.TryGetValue(view, out Asteroid asteroid))
             {
-                asteroid = new Asteroid(view, _field, velocity);
+                asteroid = new Asteroid(view, _field);
                 _asteroids.Add(view, asteroid);
+                asteroid.Destroyed += OnAsteroidDestroyed;
             }
-            else
-            {
-                //setup velocity
-            }
-            _container.Add(asteroid);
+
+            asteroid.Velocity = velocity;
+            Spawned?.Invoke(asteroid);
+        }
+
+        private void OnAsteroidDestroyed(IDestroyable asteroid)
+        {
+            Destroyed?.Invoke((Asteroid)asteroid);
         }
     }
 }

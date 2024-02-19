@@ -1,6 +1,6 @@
-using Asteroids.Game.Actors;
-
 using System.Collections.Generic;
+
+using Asteroids.Game.Actors;
 
 using UnityEngine;
 namespace Asteroids.Game
@@ -9,9 +9,10 @@ namespace Asteroids.Game
     {
         private readonly BulletSpawner _spawner;
 
-        public BulletSimulator(SpaceField field, BulletView bulletSample, Transform spawnPivot, ItemsContainer<Actor> container)
+        public BulletSimulator(IField field, BulletView bulletSample, Transform spawnPivot, ActiveActorsContainer container)
         {
-            _spawner = new BulletSpawner(field, bulletSample, spawnPivot, container);
+            _spawner = new BulletSpawner(field, bulletSample, spawnPivot);
+            _spawner.Spawned += container.Add;
         }
 
         public void HideAll()
@@ -21,7 +22,6 @@ namespace Asteroids.Game
 
         public void Simulate(float deltaTime, IReadOnlyList<ICollideable> collideables)
         {
-            _spawner.DestroyOutOfFieldBullets();
             _spawner.IncSpawnTimer(deltaTime);
         }
 

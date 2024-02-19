@@ -1,23 +1,26 @@
-﻿using Asteroids.Game.Actors;
+﻿using System.Collections.Generic;
 
-using System.Collections.Generic;
+using Asteroids.Game.Actors;
 
 namespace Asteroids.Game
 {
     public class AsteroidSimulator : ISimulator
     {
-        private const int PlayerLayer = 6;
         private const int Pieces = 5;
 
         private readonly AsteroidSpawner _bigSpawner;
         private readonly AsteroidSpawner _smallSpawner;
 
-        public AsteroidSimulator(SpaceField field,
+        public AsteroidSimulator(IField field,
                                  AsteroidView asteroidBigSample, AsteroidView asteroidSmallSample,
-                                 ItemsContainer<Actor> container)
+                                 ActiveActorsContainer container)
         {
-            _bigSpawner = new AsteroidSpawner(field, asteroidBigSample, container);
-            _smallSpawner = new AsteroidSpawner(field, asteroidSmallSample, container);
+            _bigSpawner = new AsteroidSpawner(field, asteroidBigSample);
+            _bigSpawner.Spawned += container.Add;
+            _bigSpawner.Destroyed += OnBigAsteroidDestroyed;
+
+            _smallSpawner = new AsteroidSpawner(field, asteroidSmallSample);
+            _smallSpawner.Spawned += container.Add;
         }
 
         public void HideAll()
@@ -33,29 +36,11 @@ namespace Asteroids.Game
 
         public void Simulate(float deltaTime, IReadOnlyList<ICollideable> collideables)
         {
-            IReadOnlyCollection<Asteroid> asteroids = _bigSpawner.Asteroids;
-            foreach (Asteroid asteroid in asteroids)
-            {
-                ICollideable hit = asteroid.GetTouch(collideables, PlayerLayer);
-                if (hit != null)
-                {
-                    hit.Collide();
-                    asteroid.Destroy();
-                    _smallSpawner.Spawn(asteroid.Positon, Pieces);
-                }
-            }
-
-            asteroids = _smallSpawner.Asteroids;
-            foreach (Asteroid asteroid in asteroids)
-            {
-                ICollideable hit = asteroid.GetTouch(collideables, PlayerLayer);
-                if (hit != null)
-                {
-                    hit.Collide();
-                    asteroid.Destroy();
-                }
-            }
         }
 
+        private void OnBigAsteroidDestroyed(Asteroid asteroid)
+        {
+            _smallSpawner.Spawn(asteroid.Positon, Pieces);
+        }
     }
 }

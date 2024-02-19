@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using Asteroids.Game.Actors;
+
+using UnityEngine;
 namespace Asteroids.Game
 {
-    public class SpaceField
+    public class SpaceField : IField
     {
         private static readonly int[] SpawnQuadrants = { 0, 1, 2, 3, 4, 7, 8, 11, 12, 13, 14, 15 };
         private readonly Camera _camera;
