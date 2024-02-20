@@ -15,11 +15,12 @@ namespace Asteroids.GUI
         private readonly IObservableVariable<int> _laserCharges;
         private readonly IObservableVariable<float> _laserTimer;
         private readonly IObservableVariable<int> _round;
+        private readonly IObservableVariable<int> _scores;
 
         public MainGame(MainGameView view,
             IObservableVariable<Vector2> playerPos, IObservableVariable<int> playerAngle, IObservableVariable<float> playerSpeed,
             IObservableVariable<int> laserCharges, IObservableVariable<float> laserTimer,
-            IObservableVariable<int> round)
+            IObservableVariable<int> round, IObservableVariable<int> scores)
         {
             _view = view;
 
@@ -40,6 +41,9 @@ namespace Asteroids.GUI
 
             _round = round;
             _round.Changed += OnRoundChanged;
+
+            _scores = scores;
+            _scores.Changed += OnScoresChanged;
         }
 
         public void Dispose()
@@ -52,6 +56,7 @@ namespace Asteroids.GUI
             _laserTimer.Changed -= OnLaserTimerChanged;
 
             _round.Changed -= OnRoundChanged;
+            _scores.Changed -= OnScoresChanged;
         }
 
         private void OnPlayerPositionChanged(Vector2 value)
@@ -87,6 +92,11 @@ namespace Asteroids.GUI
             //start autoplay animation:
             _view.Round.gameObject.SetActive(false);
             _view.Round.gameObject.SetActive(true);
+        }
+
+        private void OnScoresChanged(int value)
+        {
+            _view.Scores.text = $"{value}";
         }
     }
 }

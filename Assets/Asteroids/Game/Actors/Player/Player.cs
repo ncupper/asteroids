@@ -34,6 +34,7 @@ namespace Asteroids.Game
         {
             base.Spawn();
             View.Self.position = Vector3.zero;
+            PositionValue.Value = Positon;
             LaserChargesCount.Value = _model.MaxLaserCharges;
             LaserChargeTimer.Value = 0;
         }

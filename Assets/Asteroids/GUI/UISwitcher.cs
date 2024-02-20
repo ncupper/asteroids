@@ -24,13 +24,13 @@ namespace Asteroids.GUI
         public void Setup(
             IObservableVariable<Vector2> playerPos, IObservableVariable<int> playerAngle, IObservableVariable<float> playerSpeed,
             IObservableVariable<int> laserCharges, IObservableVariable<float> laserTimer,
-            IObservableVariable<int> round)
+            IObservableVariable<int> round, IObservableVariable<int> scores)
         {
             _startGame = new StartGame(StartGame);
             _startGame.StartClicked += OnStartClicked;
 
             _mainGame = new MainGame(MainGame,
-                playerPos, playerAngle, playerSpeed, laserCharges, laserTimer, round);
+                playerPos, playerAngle, playerSpeed, laserCharges, laserTimer, round, scores);
         }
 
         private void OnStartClicked()

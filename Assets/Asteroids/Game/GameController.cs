@@ -34,6 +34,7 @@ namespace Asteroids.Game
         private int _obstacleLayer;
 
         private readonly IObservableVariable<int> _round;
+        private readonly IObservableVariable<int> _scores;
         private bool _isPaused;
 
         public GameController(GameConfigData config, IField field, PlayerView playerView, UISwitcher uiSwitcher)
@@ -48,6 +49,7 @@ namespace Asteroids.Game
             _gameInput.Enable();
 
             _round = new ObservableVariable<int>();
+            _scores = new ObservableVariable<int>();
 
             _player = new Player(_config.Player, playerView, field);
             _player.Destroyed += OnPlayerDestroyed;
@@ -55,7 +57,8 @@ namespace Asteroids.Game
 
             _uiSwitcher.Setup(
                 _player.PositionValue, _player.RotationValue, _player.VelocityValue,
-                _player.LaserChargesCount, _player.LaserChargeTimer, _round);
+                _player.LaserChargesCount, _player.LaserChargeTimer,
+                _round, _scores);
             _uiSwitcher.StartClicked += StartGame;
         }
 
@@ -113,6 +116,7 @@ namespace Asteroids.Game
                     {
                         actor.Collide();
                         hit.Collide();
+                        _scores.Value += 1;
                     }
                     haveObstacles = haveObstacles || actor.Layer == _obstacleLayer;
                 }
@@ -141,6 +145,8 @@ namespace Asteroids.Game
             _uiSwitcher.SwitchTo(UIMode.StartGame);
             _gameInput.Gameplay.Disable();
             _gameInput.UI.Enable();
+
+            _scores.Value = 0;
         }
 
         private void StartGame()
