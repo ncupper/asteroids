@@ -19,9 +19,13 @@ namespace Asteroids.Game
             _model = model;
             _field = field;
             _laser = new Laser(_model, view.Laser);
+            PositionValue = new ObservableVariable<Vector2>();
+            RotationValue = new ObservableVariable<int>();
             VelocityValue = new ObservableVariable<float>();
         }
 
+        public ObservableVariable<Vector2> PositionValue { get; }
+        public ObservableVariable<int> RotationValue { get; }
         public ObservableVariable<float> VelocityValue { get; }
         public ObservableVariable<float> LaserChargeTimer => _laser.ChargeTimer;
         public ObservableVariable<int> LaserChargesCount => _laser.ChargesCount;
@@ -39,8 +43,9 @@ namespace Asteroids.Game
             if (gameInput.Gameplay.Rotate.IsInProgress())
             {
                 Vector3 angles = View.Self.localEulerAngles;
-                angles.z += gameInput.Gameplay.Rotate.ReadValue<float>();
+                angles.z += gameInput.Gameplay.Rotate.ReadValue<float>() * _model.AngularVelocity * deltaTime;
                 View.Self.localEulerAngles = angles;
+                RotationValue.Value = Mathf.RoundToInt(angles.z);
             }
 
             if (gameInput.Gameplay.Accelerate.IsPressed())
@@ -68,6 +73,10 @@ namespace Asteroids.Game
         public override void Move(float deltaTime)
         {
             View.Self.position = _field.CorrectPosition(View.Self.position + deltaTime * VelocityValue.Value * _velocity.normalized);
+            if (VelocityValue.Value.CompareTo(0) > 0)
+            {
+                PositionValue.Value = Positon;
+            }
         }
     }
 }

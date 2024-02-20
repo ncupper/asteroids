@@ -53,7 +53,9 @@ namespace Asteroids.Game
             _player.Destroyed += OnPlayerDestroyed;
             _playerLayer = _player.Layer;
 
-            _uiSwitcher.Setup(_player.VelocityValue, _player.LaserChargesCount, _player.LaserChargeTimer, _round);
+            _uiSwitcher.Setup(
+                _player.PositionValue, _player.RotationValue, _player.VelocityValue,
+                _player.LaserChargesCount, _player.LaserChargeTimer, _round);
             _uiSwitcher.StartClicked += StartGame;
         }
 

@@ -7,6 +7,7 @@ namespace Asteroids.Models
         public float Braking;
         public float Acceleration;
         public float MaxVelocity;
+        public float AngularVelocity;
 
         public float BulletSpeed;
         public float BulletFireDelaySeconds;

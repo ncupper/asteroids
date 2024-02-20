@@ -4,6 +4,7 @@
     "Braking": 10,
     "Acceleration" : 20,
     "MaxVelocity" : 20,
+    "AngularVelocity" : 180,
     "BulletSpeed": 30,
     "BulletFireDelaySeconds": 0.15,
     "MaxLaserCharges" : 3,
