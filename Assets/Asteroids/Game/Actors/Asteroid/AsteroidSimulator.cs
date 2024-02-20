@@ -1,21 +1,23 @@
-﻿namespace Asteroids.Game.Actors.Asteroid
+﻿using Asteroids.Models;
+namespace Asteroids.Game.Actors.Asteroid
 {
     public class AsteroidSimulator
     {
-        private const int Pieces = 5;
-
+        private readonly AsteroidModel _model;
         private readonly AsteroidSpawner _bigSpawner;
         private readonly AsteroidSpawner _smallSpawner;
 
-        public AsteroidSimulator(IField field,
+        public AsteroidSimulator(AsteroidModel model, IField field,
                                  AsteroidView asteroidBigSample, AsteroidView asteroidSmallSample,
                                  ActiveActorsContainer container)
         {
-            _bigSpawner = new AsteroidSpawner(field, asteroidBigSample);
+            _model = model;
+
+            _bigSpawner = new AsteroidSpawner(_model, field, asteroidBigSample);
             _bigSpawner.Spawned += container.Add;
             _bigSpawner.Destroyed += OnBigAsteroidDestroyed;
 
-            _smallSpawner = new AsteroidSpawner(field, asteroidSmallSample);
+            _smallSpawner = new AsteroidSpawner(_model, field, asteroidSmallSample);
             _smallSpawner.Spawned += container.Add;
         }
 
@@ -32,7 +34,7 @@
 
         private void OnBigAsteroidDestroyed(Asteroid asteroid)
         {
-            _smallSpawner.Spawn(asteroid.Positon, Pieces);
+            _smallSpawner.Spawn(asteroid.Positon, _model.CrushPieces);
         }
     }
 }

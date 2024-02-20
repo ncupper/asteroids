@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+using Asteroids.Models;
+
 using UnityEngine;
 namespace Asteroids.Game.Actors.Bullet
 {
@@ -7,9 +9,10 @@ namespace Asteroids.Game.Actors.Bullet
     {
         private readonly BulletSpawner _spawner;
 
-        public BulletSimulator(IField field, BulletView bulletSample, Transform spawnPivot, ActiveActorsContainer container)
+        public BulletSimulator(PlayerModel model, IField field,
+            BulletView bulletSample, Transform spawnPivot, ActiveActorsContainer container)
         {
-            _spawner = new BulletSpawner(field, bulletSample, spawnPivot);
+            _spawner = new BulletSpawner(model, field, bulletSample, spawnPivot);
             _spawner.Spawned += container.Add;
         }
 

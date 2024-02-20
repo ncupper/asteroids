@@ -10,16 +10,18 @@ using System.Collections.Generic;
 
 using Asteroids.Game.Actors.Asteroid;
 using Asteroids.Game.Actors.Bullet;
+using Asteroids.Models;
 
 using UnityEngine;
 namespace Asteroids.Game
 {
-    public class Game : IDisposable
+    public class GameController : IDisposable
     {
         private const int StartRoundDelay = 800;
 
         private readonly ActiveActorsContainer _activeActors;
 
+        private readonly GameConfigData _config;
         private readonly IField _field;
         private readonly UISwitcher _uiSwitcher;
 
@@ -36,8 +38,9 @@ namespace Asteroids.Game
         private readonly IObservableVariable<int> _round;
         private bool _isPaused;
 
-        public Game(IField field, PlayerView playerView, UISwitcher uiSwitcher)
+        public GameController(GameConfigData config, IField field, PlayerView playerView, UISwitcher uiSwitcher)
         {
+            _config = config;
             _field = field;
             _uiSwitcher = uiSwitcher;
 
@@ -48,7 +51,7 @@ namespace Asteroids.Game
 
             _round = new ObservableVariable<int>();
 
-            _player = new Player(playerView, field);
+            _player = new Player(_config.Player, playerView, field);
             _player.Destroyed += OnPlayerDestroyed;
             _playerLayer = _player.Layer;
 
@@ -56,22 +59,22 @@ namespace Asteroids.Game
             _uiSwitcher.StartClicked += StartGame;
         }
 
-        public Game SetupAsteroids(AsteroidView asteroidBigView, AsteroidView asteroidSmallView)
+        public GameController SetupAsteroids(AsteroidView asteroidBigView, AsteroidView asteroidSmallView)
         {
             _obstacleLayer = asteroidBigView.gameObject.layer;
-            _asteroids = new AsteroidSimulator(_field, asteroidBigView, asteroidSmallView, _activeActors);
+            _asteroids = new AsteroidSimulator(_config.Asteroid, _field, asteroidBigView, asteroidSmallView, _activeActors);
             return this;
         }
 
-        public Game SetupBullets(BulletView bulletView, Transform pivot)
+        public GameController SetupBullets(BulletView bulletView, Transform pivot)
         {
-            _bullets = new BulletSimulator(_field, bulletView, pivot, _activeActors);
+            _bullets = new BulletSimulator(_config.Player, _field, bulletView, pivot, _activeActors);
             return this;
         }
 
-        public Game SetupUfo(UfoView ufoView, Transform target)
+        public GameController SetupUfo(UfoView ufoView, Transform target)
         {
-            _ufo = new Ufo(ufoView, _field, target);
+            _ufo = new Ufo(_config.Ufo, ufoView, _field, target);
             _obstacleLayer = _ufo.Layer;
             return this;
         }

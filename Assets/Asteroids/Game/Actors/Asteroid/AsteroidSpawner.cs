@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+using Asteroids.Models;
+
 using UnityEngine;
 
 using Random = UnityEngine.Random;
@@ -9,15 +11,14 @@ namespace Asteroids.Game.Actors.Asteroid
 {
     public class AsteroidSpawner
     {
-        private const int BigSpeed = 5;
-        private const int SmallSpeed = 10;
-
+        private readonly AsteroidModel _model;
+        private readonly IField _field;
         private readonly ViewsPool<AsteroidView> _viewsPool;
         private readonly Dictionary<AsteroidView, Asteroid> _asteroids;
-        private readonly IField _field;
 
-        public AsteroidSpawner(IField field, AsteroidView sample)
+        public AsteroidSpawner(AsteroidModel model, IField field, AsteroidView sample)
         {
+            _model = model;
             _field = field;
 
             _viewsPool = new ViewsPool<AsteroidView>(sample, 10);
@@ -37,7 +38,7 @@ namespace Asteroids.Game.Actors.Asteroid
             for (var i = 0; i < count; ++i)
             {
                 Vector3 pos = _field.GetRandomPositionForPerimeterArea();
-                Vector3 velocity = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * BigSpeed;
+                Vector3 velocity = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * _model.BigSpeed;
                 Spawn(pos, velocity);
             }
         }
@@ -46,7 +47,7 @@ namespace Asteroids.Game.Actors.Asteroid
         {
             for (var i = 0; i < count; ++i)
             {
-                Vector3 velocity = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * SmallSpeed;
+                Vector3 velocity = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized * _model.SmallSpeed;
                 Spawn(pivot, velocity);
             }
         }

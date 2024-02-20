@@ -1,18 +1,19 @@
 using Asteroids.Game.Actors;
+using Asteroids.Models;
 
 using UnityEngine;
 namespace Asteroids.Game
 {
     public class Ufo : Actor
     {
-        private const float UfoSpeed = 5.0f;
-
+        private readonly UfoModel _model;
         private readonly IField _field;
         private readonly Transform _target;
 
-        public Ufo(UfoView view, IField field, Transform target)
+        public Ufo(UfoModel model, UfoView view, IField field, Transform target)
             : base(view)
         {
+            _model = model;
             _field = field;
             _target = target;
         }
@@ -30,7 +31,7 @@ namespace Asteroids.Game
             Vector3 angles = Quaternion.FromToRotation(View.Self.up, targetDir).eulerAngles;
 
             View.Self.localEulerAngles += new Vector3(0, 0, angles.z);
-            View.Self.position = position + deltaTime * UfoSpeed * View.Self.up;
+            View.Self.position = position + deltaTime * _model.Speed * View.Self.up;
         }
     }
 }

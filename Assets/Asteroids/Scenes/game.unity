@@ -1701,6 +1701,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ded79de83eb14d4cab2c8ccd01f3be28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _config: {fileID: 4900000, guid: d16935a3d00f42388e682369b971941f, type: 3}
   _playerPrefab: {fileID: 6433687966611212254, guid: d267e303c6421424394115808da07115, type: 3}
   _asteroidBigPrefab: {fileID: 2999048029870479542, guid: 6bc05523208cc1f4f9801e27c1b74a7a, type: 3}
   _asteroidSmallPrefab: {fileID: 2999048029870479542, guid: 588fe419fbdab9840af56e370e4e8a0d, type: 3}

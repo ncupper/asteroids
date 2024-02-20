@@ -1,0 +1,20 @@
+{
+  "Player": {
+    "Braking": 10,
+    "Acceleration" : 20,
+    "MaxVelocity" : 20,
+    "BulletSpeed": 30,
+    "BulletFireDelaySeconds": 0.15,
+    "MaxLaserCharges" : 3,
+    "LaserActiveDurationSeconds" : 1.0,
+    "LaserChargeDurationSeconds" : 10.0
+  },
+  "Asteroid": {
+    "BigSpeed" : 5,
+    "SmallSpeed" : 10,
+    "CrushPieces" :  5
+  },
+  "Ufo": {
+    "Speed": 5.0
+  }
+}

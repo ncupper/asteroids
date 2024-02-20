@@ -1,17 +1,17 @@
 using Asteroids.Game.Actors;
 using Asteroids.Inputs;
+using Asteroids.Models;
 namespace Asteroids.Game
 {
     public class Laser : Actor
     {
-        private const float LaserActiveTimer = 1.0f;
-        private const float LaserChargeTimer = 10.0f;
-        private const int MaxLaserCharges = 3;
+        private readonly PlayerModel _model;
 
         private float _activeTimer;
 
-        public Laser(MovableView view) : base(view)
+        public Laser(PlayerModel model, MovableView view) : base(view)
         {
+            _model = model;
             ChargeTimer = new ObservableVariable<float>();
             ChargesCount = new ObservableVariable<int>();
         }
@@ -30,7 +30,7 @@ namespace Asteroids.Game
             if (IsAlive)
             {
                 _activeTimer += deltaTime;
-                if (_activeTimer.CompareTo(LaserActiveTimer) >= 0)
+                if (_activeTimer.CompareTo(_model.LaserActiveDurationSeconds) >= 0)
                 {
                     Destroy();
                 }
@@ -40,7 +40,7 @@ namespace Asteroids.Game
                 ChargesCount.Value -= 1;
                 if (ChargeTimer.Value.Equals(0))
                 {
-                    ChargeTimer.Value = LaserChargeTimer;
+                    ChargeTimer.Value = _model.LaserChargeDurationSeconds;
                 }
                 _activeTimer = 0;
                 Spawn();
@@ -50,20 +50,15 @@ namespace Asteroids.Game
 
         private void UpdateRestoreTimer(float deltaTime)
         {
-            if (!ChargeTimer.Value.Equals(0))
+            if (ChargesCount.Value < _model.MaxLaserCharges && !ChargeTimer.Value.Equals(0))
             {
                 ChargeTimer.Value -= deltaTime;
                 if (ChargeTimer.Value.CompareTo(0) <= 0)
                 {
                     ChargesCount.Value += 1;
-                    if (MaxLaserCharges > ChargesCount.Value)
-                    {
-                        ChargeTimer.Value = LaserChargeTimer;
-                    }
-                    else
-                    {
-                        ChargeTimer.Value = 0;
-                    }
+                    ChargeTimer.Value = ChargesCount.Value < _model.MaxLaserCharges
+                        ? _model.LaserChargeDurationSeconds
+                        : 0;
                 }
             }
         }
