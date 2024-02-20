@@ -17,8 +17,6 @@ namespace Asteroids.Game
 {
     public class GameController : IDisposable
     {
-        private const int StartRoundDelay = 800;
-
         private readonly ActiveActorsContainer _activeActors;
 
         private readonly GameConfigData _config;
@@ -171,7 +169,7 @@ namespace Asteroids.Game
 
             //wait start round animation
             _isPaused = true;
-            await Task.Delay(StartRoundDelay);
+            await Task.Delay(Mathf.RoundToInt(_config.StartRoundDelaySeconds * 1000));
             _isPaused = false;
         }
     }

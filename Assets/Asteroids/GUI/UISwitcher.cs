@@ -27,6 +27,7 @@ namespace Asteroids.GUI
         {
             _startGame = new StartGame(StartGame);
             _startGame.StartClicked += OnStartClicked;
+
             _mainGame = new MainGame(MainGame, playerSpeed, laserCharges, laserTimer, round);
         }
 
@@ -38,8 +39,8 @@ namespace Asteroids.GUI
         private void OnDestroy()
         {
             _startGame.StartClicked -= OnStartClicked;
-            _startGame?.Dispose();
 
+            _startGame?.Dispose();
             _mainGame?.Dispose();
         }
 

@@ -26,7 +26,9 @@ namespace Asteroids
         private void Awake()
         {
             var config = JsonUtility.FromJson<GameConfigData>(_config.text);
+
             PlayerView playerView = Instantiate(_playerPrefab);
+
             _game = new GameController(config, new SpaceField(Camera.main), playerView, _uiSwitcher)
                    .SetupAsteroids(Instantiate(_asteroidBigPrefab), Instantiate(_asteroidSmallPrefab))
                    .SetupBullets(Instantiate(_bulletPrefab), playerView.BulletPivot)

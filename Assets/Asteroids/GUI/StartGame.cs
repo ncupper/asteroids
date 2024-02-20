@@ -3,7 +3,7 @@ namespace Asteroids.GUI
 {
     public class StartGame : IDisposable
     {
-        private StartGameView _view;
+        private readonly StartGameView _view;
 
         public event Action StartClicked;
 
