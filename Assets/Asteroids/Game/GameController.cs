@@ -130,7 +130,15 @@ namespace Asteroids.Game
 
         private void OnPlayerDestroyed(IDestroyable _)
         {
-            Pause();
+            _isPaused = true;
+
+            _bullets.HideAll();
+            _asteroids.HideAll();
+            _ufo.Destroy();
+
+            _uiSwitcher.SwitchTo(UIMode.GameOver);
+            _gameInput.Gameplay.Disable();
+            _gameInput.UI.Enable();
         }
 
         public void Pause()
@@ -145,8 +153,6 @@ namespace Asteroids.Game
             _uiSwitcher.SwitchTo(UIMode.StartGame);
             _gameInput.Gameplay.Disable();
             _gameInput.UI.Enable();
-
-            _scores.Value = 0;
         }
 
         private void StartGame()
@@ -154,6 +160,8 @@ namespace Asteroids.Game
             _uiSwitcher.SwitchTo(UIMode.MainGame);
             _gameInput.Gameplay.Enable();
             _gameInput.UI.Disable();
+
+            _scores.Value = 0;
 
             StartRound(1);
         }
@@ -170,7 +178,7 @@ namespace Asteroids.Game
             _bullets.HideAll();
             _asteroids.HideAll();
 
-            _asteroids.Spawn(round + 5);
+            _asteroids.Spawn(_config.FirstRoundAsteroidsCount + round - 1);
 
             _ufo.Spawn();
             _activeActors.Add(_ufo);

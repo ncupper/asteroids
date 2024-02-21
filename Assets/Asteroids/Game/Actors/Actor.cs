@@ -20,11 +20,8 @@ namespace Asteroids.Game.Actors
 
         public void Destroy()
         {
-            if (IsAlive)
-            {
-                View.gameObject.SetActive(false);
-                Destroyed?.Invoke(this);
-            }
+            View.gameObject.SetActive(false);
+            Destroyed?.Invoke(this);
         }
 
         public Vector3 Positon => View.Self.position;
